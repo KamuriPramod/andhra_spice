@@ -1,0 +1,778 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Andhra Spice &amp; Family Restaurant | Maria Puram, Kadapa</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700;9..144,900&family=Work+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#241812;
+    --ink-soft:#6b5b4d;
+    --bg:#faf6ef;
+    --card:#ffffff;
+    --line:#ece3d4;
+    --chili:#b23327;
+    --chili-dark:#8f271e;
+    --gold:#c8912f;
+    --green:#2e8b4f;
+    --dark:#1b120e;
+    --badge-bg:#fff4e8;
+    --maxw:1120px;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    margin:0;background:var(--bg);color:var(--ink);
+    font-family:'Work Sans', sans-serif;-webkit-font-smoothing:antialiased;
+  }
+  img{max-width:100%;display:block;}
+  .wrap{max-width:var(--maxw);margin:0 auto;padding:0 20px;}
+  a{color:inherit;text-decoration:none;}
+  h1,h2,h3,h4{font-family:'Fraunces',serif;margin:0;}
+
+  /* veg/nonveg dot */
+  .dot{display:inline-block;width:10px;height:10px;border:1.5px solid var(--green);border-radius:2px;position:relative;margin-right:8px;flex-shrink:0;}
+  .dot::after{content:"";position:absolute;inset:2px;background:var(--green);border-radius:50%;}
+  .dot.nonveg{border-color:var(--chili);}
+  .dot.nonveg::after{background:var(--chili);}
+  .dot.egg{border-color:var(--gold);}
+  .dot.egg::after{background:var(--gold);}
+
+  /* ---------- TOP NAV ---------- */
+  .topnav{position:sticky;top:0;z-index:60;background:var(--card);border-bottom:1px solid var(--line);}
+  .topnav .wrap{display:flex;align-items:center;justify-content:space-between;padding:12px 20px;}
+  .brand{display:flex;align-items:center;gap:10px;}
+  .brand .mark{width:34px;height:34px;border-radius:8px;background:var(--chili);color:#fff;display:flex;align-items:center;justify-content:center;font-family:'Fraunces',serif;font-weight:700;font-size:1rem;}
+  .brand .name{font-family:'Fraunces',serif;font-weight:700;font-size:1.02rem;line-height:1.1;}
+  .brand .loc{font-size:0.76rem;color:var(--ink-soft);}
+  .nav-call{background:var(--chili);color:#fff;padding:9px 18px;border-radius:8px;font-weight:600;font-size:0.88rem;}
+
+  /* ---------- COVER BANNER ---------- */
+  .cover{
+    position:relative;
+    background:
+      radial-gradient(circle at 15% 20%, rgba(255,255,255,0.08), transparent 40%),
+      repeating-linear-gradient(135deg, rgba(255,255,255,0.03) 0 2px, transparent 2px 26px),
+      linear-gradient(135deg, var(--dark), var(--chili-dark) 130%);
+    color:#fff;padding:56px 20px 0;
+  }
+  .cover-top{display:flex;flex-wrap:wrap;gap:24px;justify-content:space-between;align-items:flex-end;padding-bottom:34px;}
+  .tags{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px;}
+  .tag-pill{background:rgba(255,255,255,0.12);border:1px solid rgba(255,255,255,0.2);padding:5px 13px;border-radius:20px;font-size:0.78rem;}
+  .cover h1{font-size:clamp(2rem,5vw,3.1rem);font-weight:700;line-height:1.05;}
+  .cover .locality{margin-top:10px;color:rgba(255,255,255,0.75);font-size:0.98rem;}
+  .badge{
+    background:#fff;color:var(--dark);border-radius:10px;padding:14px 18px;min-width:150px;
+    box-shadow:0 10px 30px rgba(0,0,0,0.25);
+  }
+  .badge .lbl{font-size:0.72rem;color:var(--ink-soft);text-transform:uppercase;letter-spacing:0.04em;}
+  .badge .val{font-family:'Fraunces',serif;font-weight:700;font-size:1.3rem;color:var(--chili);margin-top:2px;}
+  .cta-row{display:flex;gap:12px;flex-wrap:wrap;padding-bottom:0;}
+  .cta{padding:12px 22px;border-radius:9px;font-weight:600;font-size:0.9rem;}
+  .cta-primary{background:#fff;color:var(--chili-dark);}
+  .cta-ghost{border:1px solid rgba(255,255,255,0.35);color:#fff;}
+
+  /* ---------- INFO STRIP ---------- */
+  .infostrip{background:var(--card);border-bottom:1px solid var(--line);}
+  .infostrip .wrap{display:flex;flex-wrap:wrap;gap:0;}
+  .info-cell{flex:1 1 190px;padding:18px 20px;border-right:1px solid var(--line);}
+  .info-cell:last-child{border-right:none;}
+  .info-cell .k{font-size:0.72rem;text-transform:uppercase;letter-spacing:0.04em;color:var(--ink-soft);}
+  .info-cell .v{margin-top:4px;font-size:0.94rem;font-weight:600;}
+  .info-cell .v a{color:var(--chili);}
+
+  /* ---------- TABS ---------- */
+  .tabnav{position:sticky;top:59px;z-index:55;background:var(--bg);border-bottom:1px solid var(--line);}
+  .tabnav .wrap{display:flex;gap:6px;overflow-x:auto;padding:0 20px;}
+  .maintab{
+    padding:16px 6px;font-weight:600;font-size:0.94rem;color:var(--ink-soft);
+    border-bottom:3px solid transparent;white-space:nowrap;background:none;border-top:none;border-left:none;border-right:none;cursor:pointer;font-family:inherit;
+  }
+  .maintab.active{color:var(--chili);border-bottom-color:var(--chili);}
+  .maintab-panel{display:none;padding:40px 0 80px;}
+  .maintab-panel.active{display:block;}
+
+  /* ---------- OVERVIEW ---------- */
+  .ov-grid{display:grid;grid-template-columns:1.1fr 0.9fr;gap:40px;}
+  .ov-copy p{line-height:1.7;color:#4a3b2f;margin:0 0 16px;}
+  .highlight-list{display:flex;flex-direction:column;gap:14px;}
+  .hl-card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:16px 18px;}
+  .hl-card .t{font-weight:700;font-size:0.95rem;}
+  .hl-card .d{font-size:0.85rem;color:var(--ink-soft);margin-top:4px;line-height:1.5;}
+  @media (max-width:800px){.ov-grid{grid-template-columns:1fr;}}
+
+  /* ---------- MENU ---------- */
+  .menu-toolbar{display:flex;gap:8px;overflow-x:auto;padding-bottom:6px;margin-bottom:28px;}
+  .cat-chip{
+    flex-shrink:0;padding:9px 16px;border-radius:20px;border:1px solid var(--line);background:var(--card);
+    font-size:0.84rem;font-weight:600;color:var(--ink-soft);cursor:pointer;font-family:inherit;
+  }
+  .cat-chip.active{background:var(--chili);border-color:var(--chili);color:#fff;}
+  .cat-panel{display:none;}
+  .cat-panel.active{display:block;}
+  .cat-note{font-size:0.84rem;color:var(--chili);font-weight:600;margin-bottom:18px;}
+  .dish-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(270px,1fr));gap:14px;}
+  .dish-card{
+    background:var(--card);border:1px solid var(--line);border-radius:12px;padding:16px 18px;
+    display:flex;align-items:center;justify-content:space-between;gap:14px;
+  }
+  .dish-info{display:flex;flex-direction:column;gap:5px;min-width:0;}
+  .dish-name{display:flex;align-items:flex-start;font-size:0.94rem;font-weight:600;line-height:1.35;}
+  .dish-price{font-family:'Fraunces',serif;font-weight:700;color:var(--chili);white-space:nowrap;font-size:0.96rem;}
+  .dish-sub{font-size:0.78rem;color:var(--ink-soft);padding-left:18px;}
+  .control{flex-shrink:0;}
+  .add-btn{
+    border:1.5px solid var(--chili);color:var(--chili);background:#fff;border-radius:8px;
+    padding:9px 20px;font-weight:700;font-size:0.8rem;letter-spacing:0.02em;cursor:pointer;
+    font-family:inherit;box-shadow:0 2px 8px rgba(178,51,39,0.08);
+  }
+  .add-btn:hover{background:#fff2ef;}
+  .stepper{display:flex;align-items:center;border:1.5px solid var(--chili);border-radius:8px;overflow:hidden;}
+  .stepper button{background:var(--chili);color:#fff;border:none;width:30px;height:32px;font-size:1.05rem;cursor:pointer;font-family:inherit;line-height:1;}
+  .stepper span{background:#fff;color:var(--chili);font-weight:700;min-width:26px;text-align:center;font-size:0.88rem;}
+  .call-only{font-size:0.74rem;color:var(--ink-soft);border:1px dashed var(--line);border-radius:8px;padding:9px 14px;white-space:nowrap;}
+
+  /* ---------- CART BAR + DRAWER ---------- */
+  .cart-bar{
+    position:fixed;left:0;right:0;bottom:0;z-index:80;background:var(--chili);color:#fff;
+    display:none;box-shadow:0 -6px 24px rgba(0,0,0,0.18);
+  }
+  .cart-bar.show{display:block;}
+  .cart-bar .wrap{display:flex;align-items:center;justify-content:space-between;padding:14px 20px;}
+  .cart-bar .cinfo{font-size:0.9rem;}
+  .cart-bar .cinfo b{font-family:'Fraunces',serif;font-size:1.05rem;}
+  .cart-bar .viewbtn{background:#fff;color:var(--chili);padding:10px 22px;border-radius:8px;font-weight:700;font-size:0.86rem;cursor:pointer;border:none;font-family:inherit;}
+  .cart-overlay{position:fixed;inset:0;background:rgba(20,10,8,0.4);z-index:85;display:none;}
+  .cart-overlay.show{display:block;}
+  .cart-drawer{
+    position:fixed;right:0;top:0;bottom:0;width:380px;max-width:92vw;background:#fff;z-index:90;
+    transform:translateX(100%);transition:transform .28s ease;box-shadow:-14px 0 36px rgba(0,0,0,0.22);
+    display:flex;flex-direction:column;
+  }
+  .cart-drawer.open{transform:translateX(0);}
+  .cart-drawer-head{padding:20px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;align-items:center;}
+  .cart-drawer-head h3{font-size:1.15rem;}
+  .close-drawer{background:none;border:none;font-size:1.4rem;cursor:pointer;color:var(--ink-soft);line-height:1;}
+  .cart-drawer-body{flex:1;overflow-y:auto;padding:8px 20px;}
+  .cart-row{display:flex;justify-content:space-between;align-items:center;padding:12px 0;border-bottom:1px solid var(--line);font-size:0.9rem;}
+  .empty-cart{color:var(--ink-soft);font-size:0.9rem;text-align:center;padding:60px 0;}
+  .cart-drawer-foot{padding:18px 20px;border-top:1px solid var(--line);}
+  .cart-total-row{display:flex;justify-content:space-between;font-weight:700;font-family:'Fraunces',serif;font-size:1.15rem;margin-bottom:14px;}
+  .order-btn{display:block;width:100%;text-align:center;background:var(--chili);color:#fff;padding:14px;border-radius:10px;font-weight:700;border:none;font-size:0.94rem;cursor:pointer;font-family:inherit;}
+  .order-note{font-size:0.76rem;color:var(--ink-soft);margin-top:10px;line-height:1.5;text-align:center;}
+  .subheading{font-family:'Fraunces',serif;font-size:1.15rem;margin:30px 0 14px;}
+  .subheading:first-child{margin-top:0;}
+  .combo-card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:20px;margin-bottom:14px;}
+  .combo-card h4{font-size:1.02rem;}
+  .combo-card ul{margin:10px 0;padding-left:18px;color:#4a3b2f;font-size:0.9rem;line-height:1.7;}
+  .combo-card .pr{font-family:'Fraunces',serif;font-weight:700;color:var(--chili);font-size:1.1rem;}
+
+  /* ---------- PHOTOS ---------- */
+  .gallery-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:14px;}
+  .ph-card{
+    aspect-ratio:4/3;border-radius:12px;display:flex;align-items:center;justify-content:center;
+    color:rgba(255,255,255,0.85);font-family:'Fraunces',serif;font-weight:600;text-align:center;padding:16px;
+    background:linear-gradient(135deg, var(--chili-dark), var(--dark));font-size:0.95rem;
+  }
+  .ph-card:nth-child(3n+2){background:linear-gradient(135deg, #7a4a1f, var(--dark));}
+  .ph-card:nth-child(3n){background:linear-gradient(135deg, var(--chili), #5c1c17);}
+  .gallery-photo{margin:0;background:var(--card);border:1px solid var(--line);border-radius:12px;overflow:hidden;}
+  .gallery-photo img{width:100%;aspect-ratio:4/3;object-fit:cover;}
+  .gallery-photo figcaption{padding:10px 12px;font-size:.8rem;color:var(--ink-soft);}
+  .photo-note{margin-top:22px;font-size:0.88rem;color:var(--ink-soft);background:var(--badge-bg);border:1px solid var(--line);border-radius:10px;padding:14px 18px;}
+
+  /* ---------- MAP / FOOTER ---------- */
+  .maparea{background:var(--dark);padding:60px 20px;color:#fff;}
+  .map-grid{display:grid;grid-template-columns:1fr 1fr;gap:40px;}
+  .map-grid h2{font-size:1.7rem;color:#fff;}
+  .map-list{margin-top:20px;}
+  .map-row{display:flex;gap:14px;padding:12px 0;border-bottom:1px solid rgba(255,255,255,0.12);font-size:0.92rem;}
+  .map-row .k{width:90px;flex-shrink:0;color:var(--gold);font-size:0.78rem;}
+  .map-row .v{color:rgba(255,255,255,0.8);}
+  .map-row .v a{color:#fff;text-decoration:underline;}
+  .map-box{border-radius:12px;overflow:hidden;border:1px solid rgba(255,255,255,0.15);min-height:280px;}
+  .map-box iframe{width:100%;height:100%;min-height:280px;border:0;}
+  @media (max-width:800px){.map-grid{grid-template-columns:1fr;}}
+  footer{background:#140d0a;color:rgba(255,255,255,0.55);padding:22px 20px;font-size:0.8rem;text-align:center;}
+
+  @media (prefers-reduced-motion: reduce){html{scroll-behavior:auto;}}
+
+  /* ---------- CHECKOUT ---------- */
+  .checkout-overlay{position:fixed;inset:0;background:rgba(20,10,8,.55);z-index:100;display:none;align-items:center;justify-content:center;padding:18px;}
+  .checkout-overlay.show{display:flex;}
+  .checkout-modal{width:620px;max-width:100%;max-height:92vh;background:#fff;border-radius:16px;overflow:hidden;box-shadow:0 20px 60px rgba(0,0,0,.3);display:flex;flex-direction:column;}
+  .checkout-head{padding:18px 20px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;align-items:center;}
+  .checkout-head h3{font-size:1.25rem;}
+  .checkout-body{overflow-y:auto;padding:20px;}
+  .checkout-section{padding-bottom:20px;margin-bottom:20px;border-bottom:1px solid var(--line);}
+  .checkout-section:last-of-type{border-bottom:0;margin-bottom:0;}
+  .checkout-section h4{font-size:1rem;margin-bottom:12px;}
+  .checkout-section label{display:block;font-size:.82rem;font-weight:600;margin-bottom:12px;color:var(--ink);}
+  .checkout-section input,.checkout-section textarea{display:block;width:100%;margin-top:6px;border:1px solid var(--line);border-radius:9px;padding:11px 12px;font:inherit;font-size:.9rem;outline:none;background:#fff;}
+  .checkout-section input:focus,.checkout-section textarea:focus{border-color:var(--chili);}
+  .checkout-section textarea{min-height:78px;resize:vertical;}
+  .choice-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+  .choice{border:1px solid var(--line);border-radius:10px;padding:12px!important;cursor:pointer;background:#fff;}
+  .choice.active{border-color:var(--chili);background:#fff4f1;color:var(--chili);}
+  .choice input{display:inline-block!important;width:auto!important;margin:0 7px 0 0!important;}
+  .payment-box{background:var(--badge-bg);border:1px solid var(--line);border-radius:10px;padding:13px;}
+  .payment-box span{display:block;font-size:.78rem;color:var(--ink-soft);margin-top:4px;line-height:1.4;}
+  .checkout-item{display:flex;justify-content:space-between;gap:10px;padding:8px 0;font-size:.88rem;border-bottom:1px dashed var(--line);}
+  .checkout-total{display:flex;justify-content:space-between;margin-top:14px;font-size:1.05rem;}
+  .small-row{font-family:'Work Sans',sans-serif;font-size:.86rem;margin-bottom:8px!important;}
+  .grand{font-size:1.2rem!important;margin-top:8px;}
+  .checkout-foot{display:flex;gap:10px;padding:16px 20px;border-top:1px solid var(--line);}
+  .checkout-foot .order-btn{flex:1;}
+  .secondary-btn{padding:12px 18px;border:1px solid var(--line);background:#fff;border-radius:10px;font-weight:700;cursor:pointer;font-family:inherit;}
+  .form-error{display:none;background:#fff0ed;border:1px solid #e0b4ab;color:#8f271e;border-radius:9px;padding:10px;font-size:.82rem;margin-top:10px;}
+  .form-error.show{display:block;}
+  .hidden{display:none!important;}
+  @media(max-width:520px){.choice-grid{grid-template-columns:1fr;}.checkout-modal{max-height:96vh;}.checkout-body{padding:16px;}.checkout-foot{padding:12px 16px;}}
+
+
+  /* Checkout layout fix: keep Done/Confirm buttons visible */
+  #checkoutStep1, #checkoutStep2 { display:flex; flex-direction:column; min-height:0; flex:1; }
+  #checkoutStep1.hidden, #checkoutStep2.hidden { display:none !important; }
+  #customerForm { display:flex; flex-direction:column; min-height:0; flex:1; }
+  #customerForm .checkout-body { flex:1; min-height:0; overflow-y:auto; }
+  #checkoutStep2 .checkout-body { flex:1; min-height:0; overflow-y:auto; }
+
+
+  /* ---------- MENU ITEM PHOTOS ---------- */
+  .dish-card{align-items:stretch;}
+  .dish-photo-wrap{width:96px;min-width:96px;border-radius:10px;overflow:hidden;background:#f1ece4;}
+  .dish-photo{width:100%;height:100%;min-height:96px;object-fit:cover;}
+  .dish-main{display:flex;align-items:center;justify-content:space-between;gap:14px;flex:1;min-width:0;}
+  .dish-info{flex:1;min-width:0;}
+  .photo-credit{font-size:.66rem;color:var(--ink-soft);margin-top:3px;}
+  @media(max-width:520px){
+    .dish-card{gap:10px;padding:12px;}
+    .dish-photo-wrap{width:78px;min-width:78px;}
+    .dish-photo{min-height:78px;}
+    .add-btn{padding:8px 13px;}
+  }
+
+</style>
+</head>
+<body>
+
+<nav class="topnav">
+  <div class="wrap">
+    <div class="brand">
+      <div class="mark">AS</div>
+      <div>
+        <div class="name">Andhra Spice &amp; Family Restaurant</div>
+        <div class="loc">Maria Puram, Kadapa</div>
+      </div>
+    </div>
+    <a class="nav-call" href="tel:+916281063295">Call</a>
+  </div>
+</nav>
+
+<header class="cover">
+  <div class="wrap">
+    <div class="cover-top">
+      <div>
+        <div class="tags">
+          <span class="tag-pill">★ 3.8 · 5,438 reviews</span>
+          <span class="tag-pill">Andhra</span>
+          <span class="tag-pill">Rayalaseema</span>
+          <span class="tag-pill">Biryani Specialist</span>
+        </div>
+        <h1>Andhra Spice and Family Restaurant</h1>
+        <div class="locality">Maria Puram, Kadapa, Andhra Pradesh</div>
+      </div>
+      <div class="badge">
+        <div class="lbl">Approx cost for two</div>
+        <div class="val">₹500–700</div>
+      </div>
+    </div>
+    <div class="cta-row" style="padding-bottom:28px;">
+      <a class="cta cta-primary" href="tel:+916281063295">📞 Call Now</a>
+      <a class="cta cta-ghost" href="#" id="directionsLink" target="_blank" rel="noopener">📍 Get Directions</a>
+      <a class="cta cta-ghost" href="#menu" data-jump="menu">🍽 Order Now</a>
+    </div>
+  </div>
+</header>
+
+<div class="infostrip">
+  <div class="wrap">
+    <div class="info-cell"><div class="k">Cuisine</div><div class="v">Andhra, Biryani, Tandoori</div></div>
+    <div class="info-cell"><div class="k">Open</div><div class="v">11:30 AM – 10:30 PM</div></div>
+    <div class="info-cell"><div class="k">Rating</div><div class="v">★ 3.8 (5,438 Google reviews)</div></div>
+    <div class="info-cell"><div class="k">Phone</div><div class="v"><a href="tel:+916281063295">+91 62810 63295</a></div></div>
+    <div class="info-cell"><div class="k">Also does</div><div class="v">Outdoor Catering</div></div>
+  </div>
+</div>
+
+<nav class="tabnav">
+  <div class="wrap">
+    <button class="maintab active" data-maintab="menu">Menu</button>
+    <button class="maintab" data-maintab="photos">Photos</button>
+    <button class="maintab" data-maintab="overview">About</button>
+  </div>
+</nav>
+
+<main class="wrap">
+
+  <section class="maintab-panel active" id="menu">
+    <div class="menu-toolbar" id="menuToolbar"></div>
+    <div id="menuPanels"></div>
+  </section>
+
+  <section class="maintab-panel" id="photos">
+    <h2 style="font-size:1.6rem;margin-bottom:20px;">Photos</h2>
+    <div class="gallery-grid" id="galleryGrid"></div>
+    <div class="photo-note">Restaurant and food photos are shown here. Replace any image with a photo the restaurant owns or has permission to use.</div>
+  </section>
+
+  <section class="maintab-panel" id="overview">
+    <div class="ov-grid">
+      <div class="ov-copy">
+        <h2 style="font-size:1.6rem;margin-bottom:16px;">About</h2>
+        <p>Andhra Spice and Family Restaurant is located in Maria Puram, Kadapa, serving bold Rayalaseema and coastal Andhra cooking — gongura, ulavacharu, natukodi, and dum biryani made the traditional way.</p>
+        <p>The menu is built around sharing: family packs, combo packs with rotis and curry included, and bucket biryanis meant for a full table rather than one plate. Outdoor catering is available for parties and functions.</p>
+        <p>Every order is cooked fresh to the ticket — please allow around 20 minutes, and note that once a dish is served or an order placed, it can't be cancelled.</p>
+      </div>
+      <div class="highlight-list">
+        <div class="hl-card">
+          <div class="t">🪣 Bucket Biryani</div>
+          <div class="d">Chicken, mutton, fish or prawns, dum-cooked and served in a full-size bucket with rotis, curry &amp; roast — built for the whole family.</div>
+        </div>
+        <div class="hl-card">
+          <div class="t">🍚 Choice of rice</div>
+          <div class="d">Most biryanis are available with Basmathi rice or local Chitty Muthyalu rice, at the same price.</div>
+        </div>
+        <div class="hl-card">
+          <div class="t">🎉 Outdoor Catering</div>
+          <div class="d">Available for parties, functions and events — ask staff for group pricing.</div>
+        </div>
+        <div class="hl-card">
+          <div class="t">📦 Family &amp; Combo Packs</div>
+          <div class="d">Biryani, curry and rotis bundled together across chicken, mutton and veg options.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+
+
+
+
+
+
+
+</main>
+
+<section class="maparea" id="visit">
+  <div class="wrap map-grid">
+    <div>
+      <h2>Find us</h2>
+      <div class="map-list">
+        <div class="map-row"><div class="k">Address</div><div class="v">Maria Puram, Kadapa, Andhra Pradesh</div></div>
+        <div class="map-row"><div class="k">Phone</div><div class="v"><a href="tel:+916281063295">+91 62810 63295</a></div></div>
+        <div class="map-row"><div class="k">Hours</div><div class="v">Open daily, 11:30 AM–10:30 PM</div></div>
+        <div class="map-row"><div class="k">Rating</div><div class="v">★ 3.8 · 5,438 Google reviews</div></div>
+        <div class="map-row"><div class="k">Note</div><div class="v">Please allow ~20 minutes per order. Orders can't be cancelled once placed or served.</div></div>
+      </div>
+    </div>
+    <div>
+      <div class="map-box">
+        <iframe src="https://www.google.com/maps?q=14.4719544,78.8234389&output=embed" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+      </div>
+      <div style="text-align:center;margin-top:10px;">
+        <a href="https://maps.google.com/?cid=8069031053081661022" target="_blank" rel="noopener" style="font-size:0.8rem;color:var(--gold);text-decoration:underline;">Open in Google Maps ↗</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>Andhra Spice &amp; Family Restaurant · Maria Puram, Kadapa</footer>
+
+<div class="cart-overlay" id="cartOverlay" onclick="closeDrawer()"></div>
+
+<div class="checkout-overlay" id="checkoutOverlay">
+  <div class="checkout-modal">
+    <div class="checkout-head">
+      <h3 id="checkoutTitle">Customer Details</h3>
+      <button class="close-drawer" onclick="closeCheckout()">×</button>
+    </div>
+
+    <!-- STEP 1 -->
+    <div id="checkoutStep1">
+      <form id="customerForm">
+        <div class="checkout-body">
+          <div class="checkout-section">
+            <h4>Order Type</h4>
+            <div class="choice-grid">
+              <label class="choice active">
+                <input type="radio" name="orderType" value="delivery" checked>
+                🚚 Delivery
+              </label>
+              <label class="choice">
+                <input type="radio" name="orderType" value="pickup">
+                🛍 Pickup
+              </label>
+            </div>
+          </div>
+
+          <div class="checkout-section">
+            <h4>Customer Details</h4>
+            <label>Full Name
+              <input id="customerName" required maxlength="60" placeholder="Enter your name">
+            </label>
+
+            <label>Mobile Number
+              <input id="customerPhone" required inputmode="numeric" pattern="[0-9]{10}" maxlength="10" placeholder="10-digit mobile number">
+            </label>
+
+            <label id="addressWrap">Delivery Address
+              <textarea id="customerAddress" maxlength="250" placeholder="House / Street / Area / Landmark"></textarea>
+            </label>
+
+            <label id="tableWrap" class="hidden">Table Number / Pickup Note
+              <input id="tableNumber" maxlength="60" placeholder="Optional">
+            </label>
+          </div>
+
+          <div class="checkout-section">
+            <h4>Payment Method</h4>
+            <div class="choice-grid">
+              <label class="choice active">
+                <input type="radio" name="paymentMethod" value="cod" checked>
+                💵 Cash on Delivery
+              </label>
+              <label class="choice">
+                <input type="radio" name="paymentMethod" value="pickup">
+                🏪 Pay at Pickup
+              </label>
+            </div>
+            <div class="payment-box" style="margin-top:10px;">
+              <b>Cash / Pickup payment only</b>
+              <span>No online payment is required for this test version.</span>
+            </div>
+          </div>
+
+          <div id="formError" class="form-error" role="alert"></div>
+        </div>
+
+        <div class="checkout-foot">
+          <button type="button" class="secondary-btn" onclick="closeCheckout()">Cancel</button>
+          <button type="submit" class="order-btn">Done</button>
+        </div>
+      </form>
+    </div>
+
+    <!-- STEP 2 -->
+    <div id="checkoutStep2" class="hidden">
+      <div class="checkout-body">
+        <div class="checkout-section">
+          <h4>Confirm Your Order</h4>
+          <div id="finalCustomerDetails" class="payment-box"></div>
+        </div>
+
+        <div class="checkout-section">
+          <h4>Order List</h4>
+          <div id="checkoutSummary"></div>
+          <div class="checkout-total"><span>Subtotal</span><b id="confirmSubtotal">₹0</b></div>
+          <div class="checkout-total" style="font-size:.9rem;margin-top:6px;"><span>Delivery</span><b id="confirmDelivery">₹0</b></div>
+          <div class="checkout-total" style="margin-top:10px;"><span>Grand Total</span><b id="checkoutGrandTotal">₹0</b></div>
+        </div>
+
+        <div id="confirmError" class="form-error" role="alert"></div>
+      </div>
+
+      <div class="checkout-foot">
+        <button type="button" class="secondary-btn" onclick="backToDetails()">Back</button>
+        <button type="button" class="order-btn" id="confirmOrderBtn">Confirm Order</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="cart-drawer" id="cartDrawer">
+  <div class="cart-drawer-head">
+    <h3>Your Order</h3>
+    <button class="close-drawer" onclick="closeDrawer()">×</button>
+  </div>
+  <div class="cart-drawer-body" id="cartBody"></div>
+  <div class="cart-drawer-foot">
+    <div class="cart-total-row"><span>Subtotal</span><span id="drawerTotal">₹0</span></div>
+    <div class="cart-total-row small-row"><span>Delivery</span><span id="deliveryTotal">₹0</span></div>
+    <div class="cart-total-row grand"><span>Grand Total</span><span id="grandTotal">₹0</span></div>
+    <button class="order-btn" id="checkoutBtn">Continue to Checkout</button>
+    <div class="order-note">You can review your details before sending the order to the restaurant.</div>
+  </div>
+</div>
+
+<div class="cart-bar" id="cartBar">
+  <div class="wrap">
+    <div class="cinfo"><b id="cartCount">0 items</b> &nbsp;·&nbsp; <span id="cartTotal">₹0</span></div>
+    <button class="viewbtn" onclick="openDrawer()">View Cart</button>
+  </div>
+</div>
+
+<script src="items.js"></script>
+<script>
+  const RESTAURANT_PHONE = "916281063295";
+  const DELIVERY_CHARGE = 40;
+
+  let customerDetails = null;
+
+  function getCartTotals(){
+    const entries = Object.values(cart);
+    const subtotal = entries.reduce((s,e)=>s + e.qty * e.price, 0);
+    const type = document.querySelector('input[name="orderType"]:checked')?.value || "delivery";
+    const delivery = type === "delivery" && subtotal > 0 ? DELIVERY_CHARGE : 0;
+    return {entries, subtotal, delivery, total: subtotal + delivery};
+  }
+
+  function updateCheckoutType(){
+    const type = document.querySelector('input[name="orderType"]:checked')?.value || "delivery";
+
+    document.getElementById("addressWrap").classList.toggle("hidden", type !== "delivery");
+    document.getElementById("tableWrap").classList.toggle("hidden", type !== "pickup");
+    document.getElementById("customerAddress").required = type === "delivery";
+
+    // Match payment method to the selected order type.
+    const codPayment = document.querySelector('input[name="paymentMethod"][value="cod"]');
+    const pickupPayment = document.querySelector('input[name="paymentMethod"][value="pickup"]');
+
+    if(type === "pickup"){
+      pickupPayment.checked = true;
+    } else {
+      codPayment.checked = true;
+    }
+
+    document.querySelectorAll(".choice").forEach(label=>{
+      label.classList.toggle("active", label.querySelector("input")?.checked);
+    });
+  }
+
+  function openCheckout(){
+    const t = getCartTotals();
+    if(!t.entries.length) return;
+
+    customerDetails = null;
+
+    document.getElementById("checkoutTitle").textContent = "Customer Details";
+    document.getElementById("checkoutStep1").classList.remove("hidden");
+    document.getElementById("checkoutStep2").classList.add("hidden");
+    document.getElementById("checkoutOverlay").classList.add("show");
+
+    document.getElementById("formError").classList.remove("show");
+    document.getElementById("confirmError").classList.remove("show");
+
+    updateCheckoutType();
+  }
+
+  function closeCheckout(){
+    document.getElementById("checkoutOverlay").classList.remove("show");
+  }
+
+  function showFinalConfirmation(){
+    const t = getCartTotals();
+
+    document.getElementById("checkoutTitle").textContent = "Confirm Order";
+    document.getElementById("checkoutStep1").classList.add("hidden");
+    document.getElementById("checkoutStep2").classList.remove("hidden");
+
+    const paymentText = customerDetails.paymentMethod === "cod"
+      ? "Cash on Delivery"
+      : "Pay at Pickup";
+
+    document.getElementById("finalCustomerDetails").innerHTML = `
+      <div><b>Name:</b> ${escapeHtml(customerDetails.name)}</div>
+      <div style="margin-top:5px;"><b>Mobile:</b> ${escapeHtml(customerDetails.phone)}</div>
+      <div style="margin-top:5px;"><b>Order Type:</b> ${customerDetails.orderType === "delivery" ? "Delivery" : "Pickup"}</div>
+      <div style="margin-top:5px;"><b>Payment:</b> ${paymentText}</div>
+      ${
+        customerDetails.orderType === "delivery"
+          ? `<div style="margin-top:5px;"><b>Address:</b> ${escapeHtml(customerDetails.address)}</div>`
+          : `<div style="margin-top:5px;"><b>Pickup Note:</b> ${escapeHtml(customerDetails.table || "None")}</div>`
+      }
+    `;
+
+    document.getElementById("checkoutSummary").innerHTML = t.entries.map(e =>
+      `<div class="checkout-item"><span>${escapeHtml(e.name)} × ${e.qty}</span><b>₹${e.qty*e.price}</b></div>`
+    ).join("");
+
+    document.getElementById("confirmSubtotal").textContent = "₹" + t.subtotal;
+    document.getElementById("confirmDelivery").textContent = "₹" + t.delivery;
+    document.getElementById("checkoutGrandTotal").textContent = "₹" + t.total;
+  }
+
+  function backToDetails(){
+    document.getElementById("checkoutTitle").textContent = "Customer Details";
+    document.getElementById("checkoutStep2").classList.add("hidden");
+    document.getElementById("checkoutStep1").classList.remove("hidden");
+  }
+
+  function escapeHtml(value){
+    return String(value)
+      .replaceAll("&","&amp;")
+      .replaceAll("<","&lt;")
+      .replaceAll(">","&gt;")
+      .replaceAll('"',"&quot;")
+      .replaceAll("'","&#039;");
+  }
+
+  document.querySelectorAll('input[name="orderType"], input[name="paymentMethod"]').forEach(input=>{
+    input.addEventListener("change", updateCheckoutType);
+  });
+
+  document.getElementById("checkoutBtn").addEventListener("click", openCheckout);
+
+  // STEP 1: customer details -> Done -> final confirmation screen
+  document.getElementById("customerForm").addEventListener("submit", e=>{
+    e.preventDefault();
+
+    const t = getCartTotals();
+    if(!t.entries.length) return;
+
+    const name = document.getElementById("customerName").value.trim();
+    const phone = document.getElementById("customerPhone").value.trim();
+    const address = document.getElementById("customerAddress").value.trim();
+    const table = document.getElementById("tableNumber").value.trim();
+    const orderType = document.querySelector('input[name="orderType"]:checked').value;
+    const paymentMethod = document.querySelector('input[name="paymentMethod"]:checked').value;
+    const error = document.getElementById("formError");
+
+    if(name.length < 2){
+      error.textContent = "Please enter your full name.";
+      error.classList.add("show");
+      return;
+    }
+
+    if(!/^[0-9]{10}$/.test(phone)){
+      error.textContent = "Please enter a valid 10-digit mobile number.";
+      error.classList.add("show");
+      return;
+    }
+
+    if(orderType === "delivery" && address.length < 8){
+      error.textContent = "Please enter the complete delivery address.";
+      error.classList.add("show");
+      return;
+    }
+
+    if(orderType === "delivery" && paymentMethod !== "cod"){
+      error.textContent = "Delivery orders can use Cash on Delivery.";
+      error.classList.add("show");
+      return;
+    }
+
+    if(orderType === "pickup" && paymentMethod !== "pickup"){
+      error.textContent = "Pickup orders can use Pay at Pickup.";
+      error.classList.add("show");
+      return;
+    }
+
+    error.classList.remove("show");
+
+    customerDetails = {name, phone, address, table, orderType, paymentMethod};
+    showFinalConfirmation();
+  });
+
+  // STEP 2: final confirmation -> send the complete order to WhatsApp
+  document.getElementById("confirmOrderBtn").addEventListener("click", ()=>{
+    const t = getCartTotals();
+    const error = document.getElementById("confirmError");
+
+    if(!customerDetails || !t.entries.length){
+      error.textContent = "Your order details are missing. Please go back and enter them again.";
+      error.classList.add("show");
+      return;
+    }
+
+    const orderNo = "AS" + Date.now().toString().slice(-6);
+    const when = new Date().toLocaleString("en-IN", {
+      day:"2-digit", month:"short", year:"numeric", hour:"2-digit", minute:"2-digit"
+    });
+
+    const paymentText = customerDetails.paymentMethod === "cod"
+      ? "Cash on Delivery"
+      : "Pay at Pickup";
+
+    const itemLines = t.entries
+      .map(e => `${e.name} x ${e.qty} = ₹${e.qty * e.price}`)
+      .join("\n");
+
+    const message =
+`*ANDHRA SPICE & FAMILY RESTAURANT*
+Maria Puram, Kadapa
+
+*ORDER #${orderNo}*
+${when}
+
+*CUSTOMER DETAILS*
+Name: ${customerDetails.name}
+Mobile: ${customerDetails.phone}
+Order Type: ${customerDetails.orderType === "delivery" ? "Delivery" : "Pickup"}
+Payment: ${paymentText}
+${customerDetails.orderType === "delivery"
+  ? `Address: ${customerDetails.address}`
+  : `Pickup Note: ${customerDetails.table || "None"}`}
+
+*ORDER LIST*
+${itemLines}
+
+*BILL*
+Subtotal: ₹${t.subtotal}
+Delivery: ₹${t.delivery}
+*GRAND TOTAL: ₹${t.total}*
+
+*Please confirm this order.*
+Thank you!`;
+
+    const whatsappUrl = `https://wa.me/${RESTAURANT_PHONE}?text=${encodeURIComponent(message)}`;
+    window.open(whatsappUrl, "_blank");
+
+    closeCheckout();
+  });
+
+  document.getElementById("checkoutOverlay").addEventListener("click", e=>{
+    if(e.target.id === "checkoutOverlay") closeCheckout();
+  });
+
+  // Main tabs
+  document.querySelectorAll(".maintab").forEach(btn=>{
+    btn.addEventListener("click", ()=>{
+      document.querySelectorAll(".maintab").forEach(b=>b.classList.remove("active"));
+      document.querySelectorAll(".maintab-panel").forEach(p=>p.classList.remove("active"));
+      btn.classList.add("active");
+      document.getElementById(btn.dataset.maintab).classList.add("active");
+      window.scrollTo({top:0,behavior:"smooth"});
+    });
+  });
+  document.querySelector('[data-jump="menu"]').addEventListener("click", e=>{
+    e.preventDefault();
+    document.querySelector('.maintab[data-maintab="menu"]').click();
+  });
+  // Photo gallery. Replace these URLs with restaurant-owned photos for commercial use.
+  const galleryPhotos = [
+    {src: restaurantPhotos.biryani1, title:"Restaurant Biryani"},
+    {src: restaurantPhotos.biryani2, title:"Biryani"},
+    {src: restaurantPhotos.menu, title:"Restaurant Menu"},
+    {src: restaurantPhotos.biryani3, title:"Biryani Special"},
+    {src: restaurantPhotos.preparation, title:"Food Preparation"},
+    {src: restaurantPhotos.fried, title:"Restaurant Food"}
+  ];
+
+  document.getElementById("galleryGrid").innerHTML = galleryPhotos.map(p => `
+    <figure class="gallery-photo">
+      <img src="${p.src}" alt="${p.title}" loading="lazy" onerror="this.parentElement.style.display='none';">
+      <figcaption>${p.title}</figcaption>
+    </figure>
+  `).join("");
+
+  // Directions link
+  document.getElementById("directionsLink").href = "https://www.google.com/maps/search/?api=1&query=Andhra+Spice+Resturant+Maria+Puram+Kadapa";
+</script>
+
+</body>
+</html>
