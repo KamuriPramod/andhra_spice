@@ -514,22 +514,132 @@
 </div>
 
 <script>
-  // Image sources used by the menu. Restaurant-listing images are used where available;
-  // fallback images are used for dishes without a matching restaurant photo.
-  const restaurant_biryani = "https://lh3.googleusercontent.com/vw4NPM2cx69KWTh8o5pWaureN8ZGbYDKLlXy-Xwo5b5Q2c0ePzE5fy9EkOlwUo-P6ilrsowzUPMgMILgJPTDFlH6dV26KUot7aGur92B%3Dw1200-rw";
-  const restaurant_biryani2 = "https://lh3.googleusercontent.com/FBhctHhDpbW-A9TTmpqk8GAs0io9aAyY6xOe9o6qhA0_bbvyZPuhvbt4jUnsgCTgKWWavFJMoXr5YdMqUzB02t-27yLQX-9-LUBvEGHPVg%3Dw1200-rw";
-  const restaurant_fried = "https://lh3.googleusercontent.com/kwfDJU8qqh3m35J7CflRr4QnTamLxLN52hFsKsTs97m48h-i_zVk7310vaZAwpR0-at5YbRQnMRfY5Ktic8OvAge-15gAvpyNlfeA7B9%3Dw1200-rw";
-  const restaurant_mixed_biryani = "https://img.magicpin.com/8236125_store_images_1.webp";
+  // Photo sources:
+  // Restaurant-specific photos from the same Maria Puram, Kadapa listing are
+  // preferred where they match the dish. Other items use relevant dish photos.
+  const restaurantPhotos = {
+    biryani1: "https://lh3.googleusercontent.com/vw4NPM2cx69KWTh8o5pWaureN8ZGbYDKLlXy-Xwo5b5Q2c0ePzE5fy9EkOlwUo-P6ilrsowzUPMgMILgJPTDFlH6dV26KUot7aGur92B%3Dw1200-rw",
+    biryani2: "https://img.magicpin.com/8236125_store_images_1.webp",
+    menu: "https://lh3.googleusercontent.com/nivtWk-9M0C_PbLdMLGKOvb6AlwQMRZswNVU0gsnaKjexN1rDjcDlvz3sayTyLcykj9yK0o8IqdjM5PZUJWT16WkYnFnrLww3Lcb5pgW%3Dw1200-rw",
+    biryani3: "https://lh3.googleusercontent.com/FBhctHhDpbW-A9TTmpqk8GAs0io9aAyY6xOe9o6qhA0_bbvyZPuhvbt4jUnsgCTgKWWavFJMoXr5YdMqUzB02t-27yLQX-9-LUBvEGHPVg%3Dw1200-rw",
+    preparation: "https://lh3.googleusercontent.com/-60IQvQfkYfLtEHxVif5siwlqhbbu0fF74M8AM04ne12WdRA3fw9xjy4zEwN7S2tFrodzh4Zr_i35eUeDAsB8ZwUS5QykEuz2Q1sm6T2ZtQ%3Dw1200-rw",
+    fried: "https://lh3.googleusercontent.com/kwfDJU8qqh3m35J7CflRr4QnTamLxLN52hFsKsTs97m48h-i_zVk7310vaZAwpR0-at5YbRQnMRfY5Ktic8OvAge-15gAvpyNlfeA7B9%3Dw1200-rw"
+  };
+
   const fallbacks = {
-    biryani: "https://commons.wikimedia.org/wiki/Special:Redirect/file/Chickenbiryani.JPG",
-    mutton: "https://commons.wikimedia.org/wiki/Special:Redirect/file/Biryani%20of%20lamb.jpg",
-    paneer: "https://commons.wikimedia.org/wiki/Special:Redirect/file/Paneer%20Butter%20Masala.jpg",
-    tikka: "https://commons.wikimedia.org/wiki/Special:Redirect/file/Paneer_tikka.jpg",
-    friedrice: "https://commons.wikimedia.org/wiki/Special:Redirect/file/FRIED_RICE.jpg",
+    chickenBiryani: "https://commons.wikimedia.org/wiki/Special:Redirect/file/Hyderabadi%20Chicken%20Biryani.jpg",
+    chickenBiryani2: "https://commons.wikimedia.org/wiki/Special:Redirect/file/Food-Chicken-Biryani.jpg",
+    muttonBiryani: "https://commons.wikimedia.org/wiki/Special:Redirect/file/Mutton%20biryani.jpg",
+    vegBiryani: "https://commons.wikimedia.org/wiki/Special:Redirect/file/Vegetable%20Biryani.JPG",
+    mushroomBiryani: "https://commons.wikimedia.org/wiki/Special:Redirect/file/MushroomBiryani.jpg",
+    fishBiryani: "https://commons.wikimedia.org/wiki/Special:Redirect/file/Fish%20Biryani.JPG",
+    kajuBiryani: "https://commons.wikimedia.org/wiki/Special:Redirect/file/Veg%20Kaju%20Biryani.jpg",
+    friedRice: "https://commons.wikimedia.org/wiki/Special:Redirect/file/FriedRice.JPG",
+    vegFriedRice: "https://commons.wikimedia.org/wiki/Special:Redirect/file/Vegetable%20fried%20rice.jpg",
+    chicken65: "https://commons.wikimedia.org/wiki/Special:Redirect/file/Chicken_65.jpg",
+    chickenTikka: "https://commons.wikimedia.org/wiki/Special:Redirect/file/ChickenTikka.jpg",
+    tandooriChicken: "https://commons.wikimedia.org/wiki/Special:Redirect/file/Tandoori%20Chicken.jpg",
+    paneerTikka: "https://commons.wikimedia.org/wiki/Special:Redirect/file/Paneer%20tikka.jpg",
+    paneer: "https://commons.wikimedia.org/wiki/Special:Redirect/file/Paneer%20butter%20masala.jpg",
+    mushroom: "https://commons.wikimedia.org/wiki/Special:Redirect/file/Mushroom%20Curry.jpg",
+    gobi: "https://commons.wikimedia.org/wiki/Special:Redirect/file/Gobi%20curry.jpg",
+    dal: "https://commons.wikimedia.org/wiki/Special:Redirect/file/Dal%20Tadka.jpg",
     prawn: "https://commons.wikimedia.org/wiki/Special:Redirect/file/Prawn%20fry.jpg",
+    fish: "https://commons.wikimedia.org/wiki/Special:Redirect/file/FISH%20CURRY.jpg",
     naan: "https://commons.wikimedia.org/wiki/Special:Redirect/file/Naan.jpg",
+    naan2: "https://commons.wikimedia.org/wiki/Special:Redirect/file/Naan_.jpg",
+    gulab: "https://commons.wikimedia.org/wiki/Special:Redirect/file/Gulab%20Jamun.jpg",
+    kaju: "https://commons.wikimedia.org/wiki/Special:Redirect/file/Kaju.jpg",
     food: "https://commons.wikimedia.org/wiki/Special:Redirect/file/Chickenbiryani.JPG"
   };
+
+  function pickPhoto(pool, name){
+    const hash = [...name].reduce((sum,ch)=>sum + ch.charCodeAt(0), 0);
+    return pool[hash % pool.length];
+  }
+
+  function getDishPhoto(name){
+    const n = name.toLowerCase();
+
+    // Biryani variants
+    if(/gongura chicken biryani|ulavacharu chicken biryani|chicken dum biryani|special chicken biryani|chicken biryani fry|chicken biryani|chicken leg piece biryani|chicken family pack|chicken.*couple pack|chicken.*jambo/.test(n))
+      return {src:pickPhoto([restaurantPhotos.biryani1, restaurantPhotos.biryani3, fallbacks.chickenBiryani, fallbacks.chickenBiryani2],name),label:"Restaurant / related biryani photo"};
+
+    if(/gongura mutton biryani|ulavacharu mutton biryani|mutton nalli|mutton dum biryani|keema biryani|special mutton biryani|mutton biryani|mutton family pack|mutton.*couple pack/.test(n))
+      return {src:pickPhoto([restaurantPhotos.biryani2, fallbacks.muttonBiryani, restaurantPhotos.biryani3],name),label:"Restaurant / related mutton biryani photo"};
+
+    if(/mushroom biryani/.test(n))
+      return {src:pickPhoto([fallbacks.mushroomBiryani, fallbacks.vegBiryani],name),label:"Related mushroom biryani photo"};
+
+    if(/fish biryani/.test(n))
+      return {src:pickPhoto([fallbacks.fishBiryani, restaurantPhotos.biryani3],name),label:"Related fish biryani photo"};
+
+    if(/prawns biryani/.test(n))
+      return {src:pickPhoto([fallbacks.prawn, restaurantPhotos.biryani2],name),label:"Related prawn photo"};
+
+    if(/veg biryani/.test(n))
+      return {src:pickPhoto([fallbacks.vegBiryani, restaurantPhotos.preparation],name),label:"Related veg biryani photo"};
+
+    if(/kaju.*biryani|biryani.*kaju/.test(n))
+      return {src:pickPhoto([fallbacks.kajuBiryani, fallbacks.vegBiryani],name),label:"Related kaju biryani photo"};
+
+    if(/kunda|bongu|bucket biryani/.test(n))
+      return {src:pickPhoto([restaurantPhotos.biryani1, restaurantPhotos.biryani2, restaurantPhotos.preparation],name),label:"Restaurant listing biryani photo"};
+
+    // Fried rice
+    if(/fried rice/.test(n))
+      return {src:pickPhoto([fallbacks.friedRice, fallbacks.vegFriedRice, restaurantPhotos.fried],name),label:"Related fried rice photo"};
+
+    // Starters
+    if(/chicken 65/.test(n))
+      return {src:fallbacks.chicken65,label:"Related Chicken 65 photo"};
+
+    if(/chicken tikka|malai tikka|zafrani tikka|achari tikka/.test(n))
+      return {src:pickPhoto([fallbacks.chickenTikka, restaurantPhotos.fried],name),label:"Related tikka photo"};
+
+    if(/tangadi|tandoori chicken|kabab|kebab|hariyali/.test(n))
+      return {src:pickPhoto([fallbacks.tandooriChicken, restaurantPhotos.fried, fallbacks.chickenTikka],name),label:"Restaurant / related tandoori starter photo"};
+
+    if(/paneer tikka|paneer garlic|harayali paneer|paneer chatpat/.test(n))
+      return {src:pickPhoto([fallbacks.paneerTikka, fallbacks.paneer],name),label:"Related paneer starter photo"};
+
+    if(/prawn|prawns/.test(n))
+      return {src:pickPhoto([fallbacks.prawn, restaurantPhotos.fried],name),label:"Related prawn photo"};
+
+    if(/fish/.test(n))
+      return {src:pickPhoto([fallbacks.fish, restaurantPhotos.biryani3],name),label:"Related fish photo"};
+
+    // Curries and vegetables
+    if(/mushroom/.test(n))
+      return {src:fallbacks.mushroom,label:"Related mushroom curry photo"};
+
+    if(/gobi/.test(n))
+      return {src:fallbacks.gobi,label:"Related gobi curry photo"};
+
+    if(/dal/.test(n))
+      return {src:fallbacks.dal,label:"Related dal photo"};
+
+    if(/paneer/.test(n))
+      return {src:pickPhoto([fallbacks.paneer, fallbacks.paneerTikka],name),label:"Related paneer photo"};
+
+    if(/roti|naan|kulcha/.test(n))
+      return {src:pickPhoto([fallbacks.naan, fallbacks.naan2],name),label:"Related Indian bread photo"};
+
+    if(/kaju/.test(n))
+      return {src:fallbacks.kaju,label:"Related cashew photo"};
+
+    if(/gulab|sweet|dessert/.test(n))
+      return {src:fallbacks.gulab,label:"Related dessert photo"};
+
+    if(/curry|masala|kofta|palak|methi|aloo|tomato|capsicum|kolapuri|kurma|patiala|mixed veg|baby corn/.test(n))
+      return {src:pickPhoto([fallbacks.paneer, fallbacks.mushroom, fallbacks.gobi, fallbacks.dal],name),label:"Related curry photo"};
+
+    if(/curd rice/.test(n))
+      return {src:restaurantPhotos.biryani1,label:"Restaurant listing food photo"};
+
+    return {src:pickPhoto([restaurantPhotos.biryani1, fallbacks.chickenBiryani2, restaurantPhotos.fried],name),label:"Related food photo"};
+  }
+
 
   const MENU = {
     "Fried Rice": {
