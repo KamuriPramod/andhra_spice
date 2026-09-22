@@ -238,10 +238,19 @@
   #checkoutStep2 .checkout-body { flex:1; min-height:0; overflow-y:auto; }
 
 
-  .photo-gallery{grid-template-columns:repeat(auto-fill,minmax(240px,1fr));}
-  .photo-card{background:var(--card);border:1px solid var(--line);border-radius:12px;overflow:hidden;}
-  .photo-card img{width:100%;aspect-ratio:4/3;object-fit:cover;background:#eee;}
-  .photo-card figcaption{padding:10px 12px;font-size:.82rem;color:var(--ink-soft);}
+  /* ---------- MENU ITEM PHOTOS ---------- */
+  .dish-card{align-items:stretch;}
+  .dish-photo-wrap{width:96px;min-width:96px;border-radius:10px;overflow:hidden;background:#f1ece4;}
+  .dish-photo{width:100%;height:100%;min-height:96px;object-fit:cover;}
+  .dish-main{display:flex;align-items:center;justify-content:space-between;gap:14px;flex:1;min-width:0;}
+  .dish-info{flex:1;min-width:0;}
+  .photo-credit{font-size:.66rem;color:var(--ink-soft);margin-top:3px;}
+  @media(max-width:520px){
+    .dish-card{gap:10px;padding:12px;}
+    .dish-photo-wrap{width:78px;min-width:78px;}
+    .dish-photo{min-height:78px;}
+    .add-btn{padding:8px 13px;}
+  }
 
 </style>
 </head>
@@ -281,7 +290,7 @@
     <div class="cta-row" style="padding-bottom:28px;">
       <a class="cta cta-primary" href="tel:+916281063295">📞 Call Now</a>
       <a class="cta cta-ghost" href="#" id="directionsLink" target="_blank" rel="noopener">📍 Get Directions</a>
-      <a class="cta cta-ghost" href="#menu-section" data-jump="menu">🍽 Order Now</a>
+      <a class="cta cta-ghost" href="#menu" data-jump="menu">🍽 Order Now</a>
     </div>
   </div>
 </header>
@@ -312,12 +321,9 @@
   </section>
 
   <section class="maintab-panel" id="photos">
-    <h2 style="font-size:1.6rem;margin-bottom:20px;">Restaurant Photos</h2>
-    <div class="gallery-grid photo-gallery" id="galleryGrid"></div>
-    <div class="photo-note">
-      These are photos found for Andhra Spice in Maria Puram, Kadapa on online restaurant listings.
-      Before using the website commercially, replace them with photos the restaurant owns or has permission to use.
-    </div>
+    <h2 style="font-size:1.6rem;margin-bottom:20px;">Photos</h2>
+    <div class="gallery-grid" id="galleryGrid"></div>
+    <div class="photo-note">Restaurant and food photos are shown here. Replace any image with a photo the restaurant owns or has permission to use.</div>
   </section>
 
   <section class="maintab-panel" id="overview">
@@ -508,6 +514,23 @@
 </div>
 
 <script>
+  // Image sources used by the menu. Restaurant-listing images are used where available;
+  // fallback images are used for dishes without a matching restaurant photo.
+  const restaurant_biryani = "https://lh3.googleusercontent.com/vw4NPM2cx69KWTh8o5pWaureN8ZGbYDKLlXy-Xwo5b5Q2c0ePzE5fy9EkOlwUo-P6ilrsowzUPMgMILgJPTDFlH6dV26KUot7aGur92B%3Dw1200-rw";
+  const restaurant_biryani2 = "https://lh3.googleusercontent.com/FBhctHhDpbW-A9TTmpqk8GAs0io9aAyY6xOe9o6qhA0_bbvyZPuhvbt4jUnsgCTgKWWavFJMoXr5YdMqUzB02t-27yLQX-9-LUBvEGHPVg%3Dw1200-rw";
+  const restaurant_fried = "https://lh3.googleusercontent.com/kwfDJU8qqh3m35J7CflRr4QnTamLxLN52hFsKsTs97m48h-i_zVk7310vaZAwpR0-at5YbRQnMRfY5Ktic8OvAge-15gAvpyNlfeA7B9%3Dw1200-rw";
+  const restaurant_mixed_biryani = "https://img.magicpin.com/8236125_store_images_1.webp";
+  const fallbacks = {
+    biryani: "https://commons.wikimedia.org/wiki/Special:Redirect/file/Chickenbiryani.JPG",
+    mutton: "https://commons.wikimedia.org/wiki/Special:Redirect/file/Biryani%20of%20lamb.jpg",
+    paneer: "https://commons.wikimedia.org/wiki/Special:Redirect/file/Paneer%20Butter%20Masala.jpg",
+    tikka: "https://commons.wikimedia.org/wiki/Special:Redirect/file/Paneer_tikka.jpg",
+    friedrice: "https://commons.wikimedia.org/wiki/Special:Redirect/file/FRIED_RICE.jpg",
+    prawn: "https://commons.wikimedia.org/wiki/Special:Redirect/file/Prawn%20fry.jpg",
+    naan: "https://commons.wikimedia.org/wiki/Special:Redirect/file/Naan.jpg",
+    food: "https://commons.wikimedia.org/wiki/Special:Redirect/file/Chickenbiryani.JPG"
+  };
+
   const MENU = {
     "Fried Rice": {
       items: [
@@ -613,21 +636,65 @@
   const itemsByIndex = {};
   const cart = {};
 
+  function getDishPhoto(name){
+    const n = name.toLowerCase();
+
+    // Prefer photos associated with the actual Mariapuram restaurant listing
+    // for biryani and the visible dry/starter dishes.
+    if(/biryani|kunda|bongu|bucket|family pack|couple pack|jambo/.test(n)){
+      return {src: restaurant_biryani, label:"Restaurant listing photo"};
+    }
+    if(/chicken 65|chicken roast|chicken dry|chicken fry|chicken tikka|kabab|kebab|tandoori|tangadi|lollipop|malai tikka|zafrani|achari|hariyali/.test(n)){
+      return {src: restaurant_fried, label:"Restaurant listing photo"};
+    }
+    if(/prawn/.test(n)){
+      return {src: fallbacks.prawn, label:"Representative photo"};
+    }
+    if(/fish/.test(n)){
+      return {src: restaurant_biryani2, label:"Restaurant listing photo"};
+    }
+
+    // Fallbacks for dishes without a matching restaurant photo.
+    if(/paneer/.test(n)) return {src: fallbacks.paneer, label:"Representative photo"};
+    if(/mushroom|gobi|capsicum|aloo|dal|tomato|palak|methi|mixed veg|kofta|baby corn|kaju/.test(n)){
+      return {src: fallbacks.paneer, label:"Representative photo"};
+    }
+    if(/fried rice|noodles/.test(n)) return {src: fallbacks.friedrice, label:"Representative photo"};
+    if(/roti|naan|kulcha/.test(n)) return {src: fallbacks.naan, label:"Representative photo"};
+    if(/water|cool drink|goli soda|soda/.test(n)) return {src: restaurant_mixed_biryani, label:"Restaurant listing photo"};
+    if(/chicken|natukodi|keema|mutton|goat/.test(n)) return {src: fallbacks.biryani, label:"Representative photo"};
+
+    return {src: fallbacks.food, label:"Representative photo"};
+  }
+
   function dishCard([name, price, sub]){
     const cls = classify(name);
     const priceHtml = typeof price === "number" ? "₹" + price : price;
     const idx = itemIndex++;
     itemsByIndex[idx] = { name, price };
+
+    const photo = getDishPhoto(name);
     const controlHtml = typeof price === "number"
       ? `<div class="control" id="ctrl-${idx}">${controlInner(idx)}</div>`
       : `<div class="control call-only">Call to order</div>`;
+
     return `<div class="dish-card">
-      <div class="dish-info">
-        <div class="dish-name"><span class="dot ${cls}"></span>${name}</div>
-        <div class="dish-price">${priceHtml}</div>
-        ${sub ? `<div class="dish-sub">${sub}</div>` : ""}
+      <div class="dish-photo-wrap">
+        <img class="dish-photo"
+             src="${photo.src}"
+             alt="${name}"
+             loading="lazy"
+             onerror="this.src='${fallbacks.food}';this.onerror=null;">
       </div>
-      ${controlHtml}
+      <div class="dish-main">
+        <div class="dish-info">
+          <div class="dish-name"><span class="dot ${cls}"></span>${name}</div>
+          <div class="dish-price">${priceHtml}</div>
+          ${sub ? `<div class="dish-sub">${sub}</div>` : ""}
+          <div class="photo-credit">${photo.label}</div>
+        </div>
+        ${controlHtml}
+      </div>
     </div>`;
   }
 
@@ -964,46 +1031,9 @@ Thank you!`;
     document.querySelector('.maintab[data-maintab="menu"]').click();
   });
 
-  // Restaurant photos from online listings for the same Andhra Spice, Maria Puram, Kadapa.
-  const restaurantPhotos = [
-    {
-      src:"https://hblimg.mmtcdn.com/content/hubble/img/kadapatiowimages/mmt/activities/t_trp/m_Andhra_Spice_1_l_457_640.jpg?im=Resize%3D%281200%2C570%29",
-      alt:"Andhra Spice biryani platter",
-      caption:"Biryani platter"
-    },
-    {
-      src:"https://img.magicpin.com/8236125_store_images_1.webp",
-      alt:"Andhra Spice biryani dishes",
-      caption:"Biryani dishes"
-    },
-    {
-      src:"https://lh3.googleusercontent.com/vw4NPM2cx69KWTh8o5pWaureN8ZGbYDKLlXy-Xwo5b5Q2c0ePzE5fy9EkOlwUo-P6ilrsowzUPMgMILgJPTDFlH6dV26KUot7aGur92B%3Dw800-rw",
-      alt:"Andhra Spice restaurant food",
-      caption:"Restaurant food"
-    },
-    {
-      src:"https://lh3.googleusercontent.com/nivtWk-9M0C_PbLdMLGKOvb6AlwQMRZswNVU0gsnaKjexN1rDjcDlvz3sayTyLcykj9yK0o8IqdjM5PZUJWT16WkYnFnrLww3Lcb5pgW%3Dw800-rw",
-      alt:"Andhra Spice menu",
-      caption:"Restaurant menu"
-    },
-    {
-      src:"https://lh3.googleusercontent.com/-60IQvQfkYfLtEHxVif5siwlqhbbu0fF74M8AM04ne12WdRA3fw9xjy4zEwN7S2tFrodzh4Zr_i35eUuDAsB8ZwUS5QykEuz2Q1sm6T2ZtQ%3Dw800-rw",
-      alt:"Andhra Spice biryani preparation",
-      caption:"Biryani preparation"
-    },
-    {
-      src:"https://lh3.googleusercontent.com/kwfDJU8qqh3m35J7CflRr4QnTamLxLN52hFsKsTs97m48h-i_zVk7310vaZAwpR0-at5YbRQnMRfY5Ktic8OvAge-15gAvpyNlfeA7B9%3Dw800-rw",
-      alt:"Andhra Spice fried food",
-      caption:"Fried food"
-    }
-  ];
-
-  document.getElementById("galleryGrid").innerHTML = restaurantPhotos.map(p =>
-    `<figure class="photo-card">
-      <img src="${p.src}" alt="${p.alt}" loading="lazy" onerror="this.parentElement.style.display='none'">
-      <figcaption>${p.caption}</figcaption>
-    </figure>`
-  ).join("");
+  // Gallery placeholders
+  const galleryLabels = ["Bucket Biryani","Gongura Chicken","Tandoori Platter","Family Thali","Restaurant Interior","Mutton Kunda Biryani"];
+  document.getElementById("galleryGrid").innerHTML = galleryLabels.map(l=>`<div class="ph-card">${l}<br><span style="font-size:0.72rem;opacity:0.7;font-family:'Work Sans',sans-serif;">photo coming soon</span></div>`).join("");
 
   // Directions link
   document.getElementById("directionsLink").href = "https://www.google.com/maps/search/?api=1&query=Andhra+Spice+Resturant+Maria+Puram+Kadapa";
