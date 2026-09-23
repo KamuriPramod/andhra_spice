@@ -252,9 +252,28 @@
     .add-btn{padding:8px 13px;}
   }
 
+
+/* ---------- OPENING ANIMATION ---------- */
+.intro-screen{position:fixed;inset:0;z-index:99999;background:#000;display:flex;align-items:center;justify-content:center;opacity:1;visibility:visible;transition:opacity .7s ease,visibility .7s ease;}
+.intro-screen.hide{opacity:0;visibility:hidden;pointer-events:none;}
+.intro-screen video{width:100%;height:100%;object-fit:cover;display:block;}
+.skip-intro{position:absolute;right:20px;bottom:20px;z-index:100000;border:1px solid rgba(255,255,255,.65);border-radius:22px;padding:9px 18px;background:rgba(0,0,0,.45);color:#fff;cursor:pointer;font-family:'Work Sans',sans-serif;font-size:.82rem;backdrop-filter:blur(4px);}
+.skip-intro:hover{background:rgba(0,0,0,.72);}
+@media(max-width:520px){.skip-intro{right:14px;bottom:14px;padding:8px 15px;}}
+
 </style>
 </head>
 <body>
+
+<!-- Restaurant Opening Animation -->
+<div class="intro-screen" id="introScreen" aria-label="Restaurant introduction">
+  <video id="introVideo" autoplay muted playsinline preload="auto">
+    <source src="animation.mp4" type="video/mp4">
+    Your browser does not support the video.
+  </video>
+  <button type="button" class="skip-intro" id="skipIntro">Skip</button>
+</div>
+
 
 <nav class="topnav">
   <div class="wrap">
@@ -1007,6 +1026,29 @@ Thank you!`;
   updateCheckoutType();
   renderCartSummary();
 
+</script>
+
+
+<script>
+(function(){
+  const introScreen=document.getElementById("introScreen");
+  const introVideo=document.getElementById("introVideo");
+  const skipIntro=document.getElementById("skipIntro");
+  if(!introScreen||!introVideo)return;
+  let closed=false;
+  function closeIntro(){
+    if(closed)return;
+    closed=true;
+    introScreen.classList.add("hide");
+    window.setTimeout(function(){
+      if(introScreen&&introScreen.parentNode)introScreen.parentNode.removeChild(introScreen);
+    },750);
+  }
+  introVideo.addEventListener("ended",closeIntro);
+  if(skipIntro)skipIntro.addEventListener("click",closeIntro);
+  introVideo.addEventListener("error",closeIntro);
+  window.setTimeout(closeIntro,10000);
+})();
 </script>
 
 </body>
