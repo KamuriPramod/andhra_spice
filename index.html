@@ -975,7 +975,7 @@ html,body{overflow-x:hidden;}
     if(!imgEl) ghost.style.background = "var(--chili)";
     document.body.appendChild(ghost);
 
-    requestanimationssFrame(()=>{
+    requestanimationFrame(()=>{
       ghost.style.left = (endRect.left + endRect.width/2 - 8) + "px";
       ghost.style.top = (endRect.top + endRect.height/2 - 8) + "px";
       ghost.style.width = "16px";
@@ -1191,7 +1191,7 @@ html,body{overflow-x:hidden;}
     const panel = document.querySelector(`.cat-panel[data-cat="${btn.dataset.cat}"]`);
     if(panel){
       panel.classList.add("active");
-      requestanimationssFrame(()=>panel.classList.add("in"));
+      requestanimationFrame(()=>panel.classList.add("in"));
       panel.querySelectorAll(".dish-card").forEach(el=>revealObserver.observe(el));
     }
   });
@@ -1204,7 +1204,7 @@ html,body{overflow-x:hidden;}
       const panel = document.getElementById(btn.dataset.maintab);
       if(panel){
         panel.classList.add("active");
-        requestanimationssFrame(()=>panel.classList.add("in"));
+        requestanimationFrame(()=>panel.classList.add("in"));
         panel.querySelectorAll(".reveal").forEach(el=>revealObserver.observe(el));
       }
       window.scrollTo({top:0,behavior:"smooth"});
