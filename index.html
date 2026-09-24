@@ -357,18 +357,23 @@ html,body{overflow-x:hidden;}
 <body>
 
 <!-- Restaurant Opening animationss -->
-<div class="intro-screen" id="introScreen" aria-label="Restaurant introduction">
-  <video id="introVideo" autoplay muted playsinline preload="auto">
-    <source src="animationss.mp4" type="video/mp4">
-    Your browser does not support the video.
-  </video>
-  <div class="intro-brand" id="introBrand">
-    <div class="ib-logo">AS</div>
-    <div class="ib-name">Andhra Spice &amp; Family Restaurant</div>
-    <div class="ib-loc">Maria Puram, Kadapa</div>
+<section class="scroll-sequence-container" id="biryaniScroll" style="position:relative;height:350vh;background:#0f0907;">
+  <div class="sticky-viewport" style="position:sticky;top:0;width:100vw;height:100vh;overflow:hidden;display:flex;align-items:center;justify-content:center;">
+    <canvas id="biryaniCanvas" style="width:100vw;height:100vh;display:block;"></canvas>
+    <div class="narrative-card left" id="textStep1">
+      <h2>Sealed In Clay</h2>
+      <p>Traditional Kunda slow-cooked over wood charcoal embers with a dough-sealed lid[cite: 1, 11].</p>
+    </div>
+    <div class="narrative-card right" id="textStep2">
+      <h2>Explosion of Spice</h2>
+      <p>Aromatic Basmathi &amp; Chitty Muthyalu rice infused with Rayalaseema spices, whole cloves, and tender chicken[cite: 1, 11].</p>
+    </div>
+    <div class="narrative-card center" id="textStep3">
+      <h2>Fresh To Your Table</h2>
+      <p>Handcrafted daily at Maria Puram, Kadapa[cite: 1]. Scroll down to place your order.</p>
+    </div>
   </div>
-  <button type="button" class="skip-intro" id="skipIntro">Skip</button>
-</div>
+</section>
 
 
 <nav class="topnav">
@@ -931,7 +936,7 @@ html,body{overflow-x:hidden;}
     itemsByIndex[idx] = {name,price};
 
     const photo = photoForDish(name);
-    const fallback = RESTAURANT_PHOTOS.food[0];
+    const fallback = "https://images.unsplash.com/photo-1563379091339-03b21ab4a4f8?w=500&auto=format&fit=crop&q=80";
 
     const controlHtml = typeof price === "number"
       ? `<div class="control" id="ctrl-${idx}">${controlInner(idx)}</div>`
@@ -943,6 +948,7 @@ html,body{overflow-x:hidden;}
              src="${photo}"
              alt="${name}"
              loading="lazy"
+             referrerpolicy="no-referrer"
              onerror="this.onerror=null;this.src='https://images.unsplash.com/photo-1563379091339-03b21ab4a4f8?w=500&auto=format&fit=crop&q=80';">
       </div>
       <div class="dish-main">
@@ -975,7 +981,7 @@ html,body{overflow-x:hidden;}
     if(!imgEl) ghost.style.background = "var(--chili)";
     document.body.appendChild(ghost);
 
-    requestanimationFrame(()=>{
+    requestAnimationFrame(()=>{
       ghost.style.left = (endRect.left + endRect.width/2 - 8) + "px";
       ghost.style.top = (endRect.top + endRect.height/2 - 8) + "px";
       ghost.style.width = "16px";
@@ -1191,7 +1197,7 @@ html,body{overflow-x:hidden;}
     const panel = document.querySelector(`.cat-panel[data-cat="${btn.dataset.cat}"]`);
     if(panel){
       panel.classList.add("active");
-      requestanimationFrame(()=>panel.classList.add("in"));
+      requestAnimationFrame(()=>panel.classList.add("in"));
       panel.querySelectorAll(".dish-card").forEach(el=>revealObserver.observe(el));
     }
   });
@@ -1204,7 +1210,7 @@ html,body{overflow-x:hidden;}
       const panel = document.getElementById(btn.dataset.maintab);
       if(panel){
         panel.classList.add("active");
-        requestanimationFrame(()=>panel.classList.add("in"));
+        requestAnimationFrame(()=>panel.classList.add("in"));
         panel.querySelectorAll(".reveal").forEach(el=>revealObserver.observe(el));
       }
       window.scrollTo({top:0,behavior:"smooth"});
@@ -1330,7 +1336,7 @@ Thank you!`;
     window.addEventListener("scroll", ()=>{
       if(ticking) return;
       ticking = true;
-      requestanimationssFrame(()=>{
+      requestAnimationFrame(()=>{
         const y = window.scrollY;
         if(coverEl && y < window.innerHeight) coverEl.style.transform = `translateY(${y * 0.12}px)`;
         ticking = false;
@@ -1385,6 +1391,7 @@ Thank you!`;
   window.setTimeout(closeIntro,10000);
 })();
 </script>
+<script src="animation.js"></script>
 
 </body>
 </html>
