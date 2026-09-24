@@ -7,6 +7,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700;9..144,900&family=Work+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="animation.css">
 <style>
   :root{
     --ink:#241812;
@@ -40,6 +41,74 @@
   .dot.nonveg::after{background:var(--chili);}
   .dot.egg{border-color:var(--gold);}
   .dot.egg::after{background:var(--gold);}
+
+  /* ---------- 3D SCROLL SEQUENCE ---------- */
+  .scroll-sequence-container{
+    position:relative;
+    height:350vh;
+    background:#0f0907;
+  }
+  .sticky-viewport{
+    position:sticky;
+    top:0;
+    width:100vw;
+    height:100vh;
+    overflow:hidden;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+  }
+  canvas#biryaniCanvas{
+    width:100vw;
+    height:100vh;
+    display:block;
+  }
+  .narrative-card{
+    position:absolute;
+    top:50%;
+    transform:translateY(-50%) scale(0.95);
+    pointer-events:none;
+    transition:opacity 0.4s ease, transform 0.4s ease;
+    opacity:0;
+    text-shadow:0 4px 30px rgba(0,0,0,0.9);
+    max-width:440px;
+    z-index:20;
+    padding:0 24px;
+  }
+  .narrative-card.left{ left:5%; text-align:left; }
+  .narrative-card.right{ right:5%; text-align:right; }
+  .narrative-card.center{ left:50%; transform:translate(-50%, -50%) scale(0.95); text-align:center; }
+  .narrative-card h2{
+    font-size:clamp(2rem, 5vw, 3.2rem);
+    font-weight:900;
+    color:#fef08a;
+    line-height:1.05;
+    margin-bottom:8px;
+    text-transform:uppercase;
+  }
+  .narrative-card p{
+    font-size:1.05rem;
+    color:rgba(255,255,255,0.85);
+    line-height:1.5;
+  }
+  .narrative-card.active{ opacity:1; transform:translateY(-50%) scale(1); }
+  .narrative-card.center.active{ transform:translate(-50%, -50%) scale(1); }
+  .skip-btn{
+    position:fixed;
+    bottom:24px;
+    right:24px;
+    z-index:99;
+    background:var(--chili);
+    color:#fff;
+    padding:12px 24px;
+    border-radius:999px;
+    font-weight:700;
+    font-size:0.88rem;
+    letter-spacing:0.04em;
+    box-shadow:0 4px 20px rgba(178,51,39,0.5);
+    transition:transform 0.2s, background 0.2s;
+  }
+  .skip-btn:hover{ transform:scale(1.05); background:var(--chili-dark); }
 
   /* ---------- TOP NAV ---------- */
   .topnav{position:sticky;top:0;z-index:60;background:var(--card);border-bottom:1px solid var(--line);}
@@ -229,14 +298,11 @@
   .hidden{display:none!important;}
   @media(max-width:520px){.choice-grid{grid-template-columns:1fr;}.checkout-modal{max-height:96vh;}.checkout-body{padding:16px;}.checkout-foot{padding:12px 16px;}}
 
-
-  /* Checkout layout fix: keep Done/Confirm buttons visible */
   #checkoutStep1, #checkoutStep2 { display:flex; flex-direction:column; min-height:0; flex:1; }
   #checkoutStep1.hidden, #checkoutStep2.hidden { display:none !important; }
   #customerForm { display:flex; flex-direction:column; min-height:0; flex:1; }
   #customerForm .checkout-body { flex:1; min-height:0; overflow-y:auto; }
   #checkoutStep2 .checkout-body { flex:1; min-height:0; overflow-y:auto; }
-
 
   /* ---------- MENU ITEM PHOTOS ---------- */
   .dish-card{align-items:stretch;}
@@ -252,1014 +318,985 @@
     .add-btn{padding:8px 13px;}
   }
 
+  /* ================= PREMIUM ANIMATION LAYER ================= */
+  :root{--reveal-dist:26px;}
 
-/* ---------- OPENING animationss ---------- */
-.intro-screen{position:fixed;inset:0;z-index:99999;background:#000;display:flex;align-items:center;justify-content:center;opacity:1;visibility:visible;transition:opacity .7s ease,visibility .7s ease;}
-.intro-screen.hide{opacity:0;visibility:hidden;pointer-events:none;}
-.intro-screen video{width:100%;height:100%;object-fit:cover;display:block;}
-.skip-intro{position:absolute;right:20px;bottom:20px;z-index:100000;border:1px solid rgba(255,255,255,.65);border-radius:22px;padding:9px 18px;background:rgba(0,0,0,.45);color:#fff;cursor:pointer;font-family:'Work Sans',sans-serif;font-size:.82rem;backdrop-filter:blur(4px);}
-.skip-intro:hover{background:rgba(0,0,0,.72);}
-@media(max-width:520px){.skip-intro{right:14px;bottom:14px;padding:8px 15px;}}
+  .reveal{opacity:0;transform:translateY(var(--reveal-dist));transition:opacity .7s cubic-bezier(.22,.9,.35,1),transform .7s cubic-bezier(.22,.9,.35,1);will-change:opacity,transform;}
+  .reveal.in-view{opacity:1;transform:translateY(0);}
 
-/* ================= PREMIUM animationss LAYER ================= */
-:root{--reveal-dist:26px;}
+  .topnav{animation:navDown .7s cubic-bezier(.22,.9,.35,1) both;}
+  @keyframes navDown{from{opacity:0;transform:translateY(-100%);}to{opacity:1;transform:translateY(0);}}
 
-.reveal{opacity:0;transform:translateY(var(--reveal-dist));transition:opacity .7s cubic-bezier(.22,.9,.35,1),transform .7s cubic-bezier(.22,.9,.35,1);will-change:opacity,transform;}
-.reveal.in-view{opacity:1;transform:translateY(0);}
-
-.topnav{animationss:navDown .7s cubic-bezier(.22,.9,.35,1) both;}
-@keyframes navDown{from{opacity:0;transform:translateY(-100%);}to{opacity:1;transform:translateY(0);}}
-
-.cover-top{position:relative;}
-.cover-top>div:first-child .tags,
-.cover-top>div:first-child h1,
-.cover-top>div:first-child .locality,
-.cover-top .badge{opacity:0;transform:translateY(22px);animationss:heroUp .8s cubic-bezier(.22,.9,.35,1) both;}
-.cover-top>div:first-child .tags{animationss-delay:.15s;}
-.cover-top>div:first-child h1{animationss-delay:.3s;}
-.cover-top>div:first-child .locality{animationss-delay:.42s;}
-.cover-top .badge{animationss-delay:.55s;}
-@keyframes heroUp{to{opacity:1;transform:translateY(0);}}
-
-.cta-row .cta{opacity:0;transform:translateY(16px);animationss:heroUp .7s cubic-bezier(.22,.9,.35,1) both;}
-.cta-row .cta:nth-child(1){animationss-delay:.68s;}
-.cta-row .cta:nth-child(2){animationss-delay:.78s;}
-.cta-row .cta:nth-child(3){animationss-delay:.88s;}
-
-.steam-wrap{position:absolute;top:6px;right:16%;width:64px;height:100px;pointer-events:none;opacity:.32;z-index:0;}
-@media(max-width:800px){.steam-wrap{display:none;}}
-.steam-wrap svg{width:100%;height:100%;}
-.steam-wrap path{animationss:steamRise 4.5s ease-in-out infinite;}
-.steam-wrap path:nth-child(2){animationss-delay:1.1s;}
-.steam-wrap path:nth-child(3){animationss-delay:2.2s;}
-@keyframes steamRise{0%{opacity:0;transform:translateY(0) scaleX(1);}25%{opacity:.6;}100%{opacity:0;transform:translateY(-60px) scaleX(1.4);}}
-
-.sec-heading{position:relative;display:inline-block;padding-bottom:10px;}
-.sec-heading::after{content:"";position:absolute;left:0;bottom:0;height:3px;width:0;background:var(--chili);transition:width .7s cubic-bezier(.22,.9,.35,1) .15s;}
-.sec-heading.in-view::after{width:64px;}
-
-.dish-photo{transition:transform .4s ease;}
-.dish-photo-wrap:hover .dish-photo{transform:scale(1.1);}
-
-.cat-panel,.maintab-panel{transition:opacity .28s ease,transform .28s ease;}
-.cat-panel{opacity:0;transform:translateY(10px);}
-.cat-panel.active.in{opacity:1;transform:translateY(0);}
-.maintab-panel{opacity:0;transform:translateY(10px);}
-.maintab-panel.active.in{opacity:1;transform:translateY(0);}
-
-.nav-actions{display:flex;align-items:center;}
-.nav-cart{position:relative;display:flex;align-items:center;justify-content:center;width:38px;height:38px;border-radius:9px;background:var(--badge-bg);border:1px solid var(--line);cursor:pointer;margin-right:8px;flex-shrink:0;}
-.nav-cart svg{width:18px;height:18px;}
-.nav-cart .badge-count{position:absolute;top:-6px;right:-6px;background:var(--chili);color:#fff;font-size:.65rem;font-weight:700;min-width:17px;height:17px;border-radius:50%;display:flex;align-items:center;justify-content:center;padding:0 3px;}
-.nav-cart.bump .badge-count{animationss:badgeBounce .45s ease;}
-@keyframes badgeBounce{0%{transform:scale(1);}40%{transform:scale(1.5);}100%{transform:scale(1);}}
-
-.add-btn.pulse,.stepper button.pulse{animationss:btnPulse .4s ease;}
-@keyframes btnPulse{0%{transform:scale(1);}50%{transform:scale(1.16);}100%{transform:scale(1);}}
-
-.fly-ghost{position:fixed;z-index:200;border-radius:50%;pointer-events:none;object-fit:cover;transition:all .6s cubic-bezier(.35,0,.6,1);}
-
-.cart-overlay{opacity:0;transition:opacity .28s ease;}
-.cart-overlay.show{opacity:1;}
-
-.gallery-item{border-radius:12px;overflow:hidden;aspect-ratio:4/3;background:#f1ece4;}
-.gallery-item img{width:100%;height:100%;object-fit:cover;transition:transform .5s ease;}
-.gallery-item:hover img{transform:scale(1.08);}
-
-.intro-brand{position:absolute;left:0;right:0;bottom:12%;display:flex;flex-direction:column;align-items:center;gap:8px;color:#fff;text-align:center;z-index:2;pointer-events:none;}
-.intro-brand .ib-logo,.intro-brand .ib-name,.intro-brand .ib-loc{opacity:0;transform:translateY(18px);transition:opacity .8s cubic-bezier(.22,.9,.35,1),transform .8s cubic-bezier(.22,.9,.35,1);}
-.intro-brand.show .ib-logo{opacity:1;transform:translateY(0);}
-.intro-brand.show .ib-name{opacity:1;transform:translateY(0);transition-delay:.15s;}
-.intro-brand.show .ib-loc{opacity:1;transform:translateY(0);transition-delay:.3s;}
-.intro-brand .ib-logo{width:52px;height:52px;border-radius:12px;background:var(--chili);color:#fff;display:flex;align-items:center;justify-content:center;font-family:'Fraunces',serif;font-weight:700;font-size:1.3rem;box-shadow:0 8px 24px rgba(0,0,0,.35);}
-.intro-brand .ib-name{font-family:'Fraunces',serif;font-weight:700;font-size:1.5rem;text-shadow:0 2px 10px rgba(0,0,0,.5);}
-.intro-brand .ib-loc{font-size:.9rem;color:rgba(255,255,255,.85);text-shadow:0 2px 8px rgba(0,0,0,.5);}
-@media(max-width:520px){.intro-brand .ib-name{font-size:1.15rem;}.intro-brand{bottom:16%;}}
-
-html,body{overflow-x:hidden;}
-
-@media(max-width:600px){
-  :root{--reveal-dist:14px;}
+  .cover-top{position:relative;}
   .cover-top>div:first-child .tags,
   .cover-top>div:first-child h1,
   .cover-top>div:first-child .locality,
-  .cover-top .badge,
-  .cta-row .cta{transform:translateY(12px);}
-}
+  .cover-top .badge{opacity:0;transform:translateY(22px);animation:heroUp .8s cubic-bezier(.22,.9,.35,1) both;}
+  .cover-top>div:first-child .tags{animation-delay:.15s;}
+  .cover-top>div:first-child h1{animation-delay:.3s;}
+  .cover-top>div:first-child .locality{animation-delay:.42s;}
+  .cover-top .badge{animation-delay:.55s;}
+  @keyframes heroUp{to{opacity:1;transform:translateY(0);}}
 
-@media (prefers-reduced-motion: reduce){
-  *,*::before,*::after{animationss-duration:.001ms !important;animationss-iteration-count:1 !important;transition-duration:.001ms !important;scroll-behavior:auto !important;}
-  .reveal,.cover-top>div:first-child .tags,.cover-top>div:first-child h1,.cover-top>div:first-child .locality,.cover-top .badge,.cta-row .cta{opacity:1;transform:none;}
-}
+  .cta-row .cta{opacity:0;transform:translateY(16px);animation:heroUp .7s cubic-bezier(.22,.9,.35,1) both;}
+  .cta-row .cta:nth-child(1){animation-delay:.68s;}
+  .cta-row .cta:nth-child(2){animation-delay:.78s;}
+  .cta-row .cta:nth-child(3){animation-delay:.88s;}
 
+  .steam-wrap{position:absolute;top:6px;right:16%;width:64px;height:100px;pointer-events:none;opacity:.32;z-index:0;}
+  @media(max-width:800px){.steam-wrap{display:none;}}
+  .steam-wrap svg{width:100%;height:100%;}
+  .steam-wrap path{animation:steamRise 4.5s ease-in-out infinite;}
+  .steam-wrap path:nth-child(2){animation-delay:1.1s;}
+  .steam-wrap path:nth-child(3){animation-delay:2.2s;}
+  @keyframes steamRise{0%{opacity:0;transform:translateY(0) scaleX(1);}25%{opacity:.6;}100%{opacity:0;transform:translateY(-60px) scaleX(1.4);}}
+
+  .sec-heading{position:relative;display:inline-block;padding-bottom:10px;}
+  .sec-heading::after{content:"";position:absolute;left:0;bottom:0;height:3px;width:0;background:var(--chili);transition:width .7s cubic-bezier(.22,.9,.35,1) .15s;}
+  .sec-heading.in-view::after{width:64px;}
+
+  .dish-photo{transition:transform .4s ease;}
+  .dish-photo-wrap:hover .dish-photo{transform:scale(1.1);}
+
+  .cat-panel,.maintab-panel{transition:opacity .28s ease,transform .28s ease;}
+  .cat-panel{opacity:0;transform:translateY(10px);}
+  .cat-panel.active.in{opacity:1;transform:translateY(0);}
+  .maintab-panel{opacity:0;transform:translateY(10px);}
+  .maintab-panel.active.in{opacity:1;transform:translateY(0);}
+
+  .nav-actions{display:flex;align-items:center;}
+  .nav-cart{position:relative;display:flex;align-items:center;justify-content:center;width:38px;height:38px;border-radius:9px;background:var(--badge-bg);border:1px solid var(--line);cursor:pointer;margin-right:8px;flex-shrink:0;}
+  .nav-cart svg{width:18px;height:18px;}
+  .nav-cart .badge-count{position:absolute;top:-6px;right:-6px;background:var(--chili);color:#fff;font-size:.65rem;font-weight:700;min-width:17px;height:17px;border-radius:50%;display:flex;align-items:center;justify-content:center;padding:0 3px;}
+  .nav-cart.bump .badge-count{animation:badgeBounce .45s ease;}
+  @keyframes badgeBounce{0%{transform:scale(1);}40%{transform:scale(1.5);}100%{transform:scale(1);}}
+
+  .add-btn.pulse,.stepper button.pulse{animation:btnPulse .4s ease;}
+  @keyframes btnPulse{0%{transform:scale(1);}50%{transform:scale(1.16);}100%{transform:scale(1);}}
+
+  .fly-ghost{position:fixed;z-index:200;border-radius:50%;pointer-events:none;object-fit:cover;transition:all .6s cubic-bezier(.35,0,.6,1);}
+
+  .cart-overlay{opacity:0;transition:opacity .28s ease;}
+  .cart-overlay.show{opacity:1;}
+
+  .gallery-item{border-radius:12px;overflow:hidden;aspect-ratio:4/3;background:#f1ece4;}
+  .gallery-item img{width:100%;height:100%;object-fit:cover;transition:transform .5s ease;}
+  .gallery-item:hover img{transform:scale(1.08);}
+
+  html,body{overflow-x:hidden;}
+
+  @media(max-width:600px){
+    :root{--reveal-dist:14px;}
+    .cover-top>div:first-child .tags,
+    .cover-top>div:first-child h1,
+    .cover-top>div:first-child .locality,
+    .cover-top .badge,
+    .cta-row .cta{transform:translateY(12px);}
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    *,*::before,*::after{animation-duration:.001ms !important;animation-iteration-count:1 !important;transition-duration:.001ms !important;scroll-behavior:auto !important;}
+    .reveal,.cover-top>div:first-child .tags,.cover-top>div:first-child h1,.cover-top>div:first-child .locality,.cover-top .badge,.cta-row .cta{opacity:1;transform:none;}
+  }
 </style>
 </head>
 <body>
 
-<!-- Restaurant Opening animationss -->
-<div class="intro-screen" id="introScreen" aria-label="Restaurant introduction">
-  <video id="introVideo" autoplay muted playsinline preload="auto">
-    <source src="animationss.mp4" type="video/mp4">
-    Your browser does not support the video.
-  </video>
-  <div class="intro-brand" id="introBrand">
-    <div class="ib-logo">AS</div>
-    <div class="ib-name">Andhra Spice &amp; Family Restaurant</div>
-    <div class="ib-loc">Maria Puram, Kadapa</div>
-  </div>
-  <button type="button" class="skip-intro" id="skipIntro">Skip</button>
-</div>
+  <!-- Floating Jump Button to Skip to Menu -->
+  <a href="#menuAnchor" class="skip-btn">Order Food ↓</a>
 
+  <!-- 1. APPLE-STYLE 3D SCROLL CANVAS HERO -->
+  <section class="scroll-sequence-container" id="biryaniScroll">
+    <div class="sticky-viewport">
+      <canvas id="biryaniCanvas"></canvas>
 
-<nav class="topnav">
-  <div class="wrap">
-    <div class="brand">
-      <div class="mark">AS</div>
-      <div>
-        <div class="name">Andhra Spice &amp; Family Restaurant</div>
-        <div class="loc">Maria Puram, Kadapa</div>
+      <div class="narrative-card left" id="textStep1">
+        <h2>Sealed In Clay</h2>
+        <p>Traditional Kunda slow-cooked over wood charcoal embers with a dough-sealed lid[cite: 1, 11].</p>
       </div>
-    </div>
-    <div class="nav-actions">
-      <button type="button" class="nav-cart" id="navCart" aria-label="View cart" onclick="openDrawer()">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1"></circle><circle cx="20" cy="21" r="1"></circle><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path></svg>
-        <span class="badge-count" id="navCartBadge">0</span>
-      </button>
-      <a class="nav-call" href="tel:+919441382762">Call</a>
-    </div>
-  </div>
-</nav>
 
-<header class="cover">
-  <div class="wrap">
-    <div class="cover-top">
-      <div>
-        <div class="tags">
-          <span class="tag-pill">★ 3.8 · 5,438 reviews</span>
-          <span class="tag-pill">Andhra</span>
-          <span class="tag-pill">Rayalaseema</span>
-          <span class="tag-pill">Biryani Specialist</span>
-        </div>
-        <h1>Andhra Spice and Family Restaurant</h1>
-        <div class="locality">Maria Puram, Kadapa, Andhra Pradesh</div>
-        <div class="steam-wrap" aria-hidden="true">
-          <svg viewBox="0 0 60 100"><path d="M20 100 C10 80 30 70 20 50 C10 30 30 20 22 0" stroke="#fff" stroke-width="3" fill="none" stroke-linecap="round"/><path d="M35 100 C25 80 45 70 35 50 C25 30 45 20 37 0" stroke="#fff" stroke-width="3" fill="none" stroke-linecap="round"/><path d="M48 100 C38 80 58 70 48 50 C38 30 58 20 50 0" stroke="#fff" stroke-width="2" fill="none" stroke-linecap="round"/></svg>
-        </div>
+      <div class="narrative-card right" id="textStep2">
+        <h2>Explosion of Spice</h2>
+        <p>Aromatic Basmathi &amp; Chitty Muthyalu rice infused with Rayalaseema spices, whole cloves, and tender chicken[cite: 1, 11].</p>
       </div>
-      <div class="badge">
-        <div class="lbl">Approx cost for two</div>
-        <div class="val">₹500–700</div>
-      </div>
-    </div>
-    <div class="cta-row" style="padding-bottom:28px;">
-      <a class="cta cta-primary" href="tel:+919441382762">📞 Call Now</a>
-      <a class="cta cta-ghost" href="#" id="directionsLink" target="_blank" rel="noopener">📍 Get Directions</a>
-      <a class="cta cta-ghost" href="#menu" data-jump="menu">🍽 Order Now</a>
-    </div>
-  </div>
-</header>
 
-<div class="infostrip">
-  <div class="wrap">
-    <div class="info-cell"><div class="k">Cuisine</div><div class="v">Andhra, Biryani, Tandoori</div></div>
-    <div class="info-cell"><div class="k">Open</div><div class="v">11:30 AM – 10:30 PM</div></div>
-    <div class="info-cell"><div class="k">Rating</div><div class="v">★ 3.8 (5,438 Google reviews)</div></div>
-    <div class="info-cell"><div class="k">Phone</div><div class="v"><a href="tel:+919441382762">+91 94413 82762</a></div></div>
-    <div class="info-cell"><div class="k">Also does</div><div class="v">Outdoor Catering</div></div>
-  </div>
-</div>
-
-<nav class="tabnav">
-  <div class="wrap">
-    <button class="maintab active" data-maintab="menu">Menu</button>
-    <button class="maintab" data-maintab="photos">Photos</button>
-    <button class="maintab" data-maintab="overview">About</button>
-  </div>
-</nav>
-
-<main class="wrap">
-
-  <section class="maintab-panel active" id="menu">
-    <div class="menu-toolbar" id="menuToolbar"></div>
-    <div id="menuPanels"></div>
-  </section>
-
-  <section class="maintab-panel" id="photos">
-    <h2 class="sec-heading reveal" style="font-size:1.6rem;margin-bottom:20px;">Photos</h2>
-    <div class="gallery-grid" id="galleryGrid"></div>
-    <div class="photo-note reveal">Restaurant and food photos are shown here. Replace any image with a photo the restaurant owns or has permission to use.</div>
-  </section>
-
-  <section class="maintab-panel" id="overview">
-    <div class="ov-grid">
-      <div class="ov-copy reveal">
-        <h2 class="sec-heading" style="font-size:1.6rem;margin-bottom:16px;">About</h2>
-        <p>Andhra Spice and Family Restaurant is located in Maria Puram, Kadapa, serving bold Rayalaseema and coastal Andhra cooking — gongura, ulavacharu, natukodi, and dum biryani made the traditional way.</p>
-        <p>The menu is built around sharing: family packs, combo packs with rotis and curry included, and bucket biryanis meant for a full table rather than one plate. Outdoor catering is available for parties and functions.</p>
-        <p>Every order is cooked fresh to the ticket — please allow around 20 minutes, and note that once a dish is served or an order placed, it can't be cancelled.</p>
-      </div>
-      <div class="highlight-list">
-        <div class="hl-card reveal" style="transition-delay:.05s;">
-          <div class="t">🪣 Bucket Biryani</div>
-          <div class="d">Chicken, mutton, fish or prawns, dum-cooked and served in a full-size bucket with rotis, curry &amp; roast — built for the whole family.</div>
-        </div>
-        <div class="hl-card reveal" style="transition-delay:.12s;">
-          <div class="t">🍚 Choice of rice</div>
-          <div class="d">Most biryanis are available with Basmathi rice or local Chitty Muthyalu rice, at the same price.</div>
-        </div>
-        <div class="hl-card reveal" style="transition-delay:.19s;">
-          <div class="t">🎉 Outdoor Catering</div>
-          <div class="d">Available for parties, functions and events — ask staff for group pricing.</div>
-        </div>
-        <div class="hl-card reveal" style="transition-delay:.26s;">
-          <div class="t">📦 Family &amp; Combo Packs</div>
-          <div class="d">Biryani, curry and rotis bundled together across chicken, mutton and veg options.</div>
-        </div>
+      <div class="narrative-card center" id="textStep3">
+        <h2>Fresh To Your Table</h2>
+        <p>Handcrafted daily at Maria Puram, Kadapa[cite: 1]. Scroll down to place your order.</p>
       </div>
     </div>
   </section>
 
+  <!-- 2. MAIN RESTAURANT INTERFACE -->
+  <div class="site-body" id="menuAnchor">
 
+    <nav class="topnav">
+      <div class="wrap">
+        <div class="brand">
+          <div class="mark">AS</div>
+          <div>
+            <div class="name">Andhra Spice &amp; Family Restaurant[cite: 1]</div>
+            <div class="loc">Maria Puram, Kadapa[cite: 1]</div>
+          </div>
+        </div>
+        <div class="nav-actions">
+          <button type="button" class="nav-cart" id="navCart" aria-label="View cart" onclick="openDrawer()">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1"></circle><circle cx="20" cy="21" r="1"></circle><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path></svg>
+            <span class="badge-count" id="navCartBadge">0</span>
+          </button>
+          <a class="nav-call" href="tel:+919441382762">Call[cite: 1]</a>
+        </div>
+      </div>
+    </nav>
 
+    <header class="cover">
+      <div class="wrap">
+        <div class="cover-top">
+          <div>
+            <div class="tags">
+              <span class="tag-pill">★ 3.8 · 5,438 reviews[cite: 16]</span>
+              <span class="tag-pill">Andhra[cite: 16]</span>
+              <span class="tag-pill">Rayalaseema[cite: 16]</span>
+              <span class="tag-pill">Biryani Specialist[cite: 16]</span>
+            </div>
+            <h1>Andhra Spice and Family Restaurant[cite: 16]</h1>
+            <div class="locality">Maria Puram, Kadapa, Andhra Pradesh[cite: 16]</div>
+            <div class="steam-wrap" aria-hidden="true">
+              <svg viewBox="0 0 60 100"><path d="M20 100 C10 80 30 70 20 50 C10 30 30 20 22 0" stroke="#fff" stroke-width="3" fill="none" stroke-linecap="round"/><path d="M35 100 C25 80 45 70 35 50 C25 30 45 20 37 0" stroke="#fff" stroke-width="3" fill="none" stroke-linecap="round"/><path d="M48 100 C38 80 58 70 48 50 C38 30 58 20 50 0" stroke="#fff" stroke-width="2" fill="none" stroke-linecap="round"/></svg>
+            </div>
+          </div>
+          <div class="badge">
+            <div class="lbl">Approx cost for two[cite: 16]</div>
+            <div class="val">₹500–700[cite: 16]</div>
+          </div>
+        </div>
+        <div class="cta-row" style="padding-bottom:28px;">
+          <a class="cta cta-primary" href="tel:+919441382762">📞 Call Now[cite: 16]</a>
+          <a class="cta cta-ghost" href="#" id="directionsLink" target="_blank" rel="noopener">📍 Get Directions[cite: 16]</a>
+          <a class="cta cta-ghost" href="#menu" data-jump="menu">🍽 Order Now[cite: 16]</a>
+        </div>
+      </div>
+    </header>
 
-
-
-
-
-
-</main>
-
-<section class="maparea" id="visit">
-  <div class="wrap map-grid">
-    <div class="reveal">
-      <h2 class="sec-heading">Find us</h2>
-      <div class="map-list">
-        <div class="map-row"><div class="k">Address</div><div class="v">Maria Puram, Kadapa, Andhra Pradesh</div></div>
-        <div class="map-row"><div class="k">Phone</div><div class="v"><a href="tel:+919441382762">+91 94413 82762</a></div></div>
-        <div class="map-row"><div class="k">Hours</div><div class="v">Open daily, 11:30 AM–10:30 PM</div></div>
-        <div class="map-row"><div class="k">Rating</div><div class="v">★ 3.8 · 5,438 Google reviews</div></div>
-        <div class="map-row"><div class="k">Note</div><div class="v">Please allow ~20 minutes per order. Orders can't be cancelled once placed or served.</div></div>
+    <div class="infostrip">
+      <div class="wrap">
+        <div class="info-cell"><div class="k">Cuisine[cite: 16]</div><div class="v">Andhra, Biryani, Tandoori[cite: 16]</div></div>
+        <div class="info-cell"><div class="k">Open[cite: 16]</div><div class="v">11:30 AM – 10:30 PM[cite: 16]</div></div>
+        <div class="info-cell"><div class="k">Rating[cite: 16]</div><div class="v">★ 3.8 (5,438 Google reviews)[cite: 16]</div></div>
+        <div class="info-cell"><div class="k">Phone[cite: 16]</div><div class="v"><a href="tel:+919441382762">+91 94413 82762[cite: 16]</a></div></div>
+        <div class="info-cell"><div class="k">Also does[cite: 16]</div><div class="v">Outdoor Catering[cite: 16]</div></div>
       </div>
     </div>
-    <div class="reveal" style="transition-delay:.1s;">
-      <div class="map-box">
-        <iframe src="https://www.google.com/maps?q=14.4719544,78.8234389&output=embed" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+
+    <nav class="tabnav">
+      <div class="wrap">
+        <button class="maintab active" data-maintab="menu">Menu[cite: 16]</button>
+        <button class="maintab" data-maintab="photos">Photos[cite: 16]</button>
+        <button class="maintab" data-maintab="overview">About[cite: 16]</button>
       </div>
-      <div style="text-align:center;margin-top:10px;">
-        <a href="https://maps.google.com/?cid=8069031053081661022" target="_blank" rel="noopener" style="font-size:0.8rem;color:var(--gold);text-decoration:underline;">Open in Google Maps ↗</a>
+    </nav>
+
+    <main class="wrap">
+      <section class="maintab-panel active" id="menu">
+        <div class="menu-toolbar" id="menuToolbar"></div>
+        <div id="menuPanels"></div>
+      </section>
+
+      <section class="maintab-panel" id="photos">
+        <h2 class="sec-heading reveal" style="font-size:1.6rem;margin-bottom:20px;">Photos[cite: 16]</h2>
+        <div class="gallery-grid" id="galleryGrid"></div>
+        <div class="photo-note reveal">Restaurant and food photos are shown here. Replace any image with a photo the restaurant owns or has permission to use.[cite: 16]</div>
+      </section>
+
+      <section class="maintab-panel" id="overview">
+        <div class="ov-grid">
+          <div class="ov-copy reveal">
+            <h2 class="sec-heading" style="font-size:1.6rem;margin-bottom:16px;">About[cite: 16]</h2>
+            <p>Andhra Spice and Family Restaurant is located in Maria Puram, Kadapa, serving bold Rayalaseema and coastal Andhra cooking — gongura, ulavacharu, natukodi, and dum biryani made the traditional way.[cite: 16]</p>
+            <p>The menu is built around sharing: family packs, combo packs with rotis and curry included, and bucket biryanis meant for a full table rather than one plate. Outdoor catering is available for parties and functions.[cite: 16]</p>
+            <p>Every order is cooked fresh to the ticket — please allow around 20 minutes, and note that once a dish is served or an order placed, it can't be cancelled.[cite: 16]</p>
+          </div>
+          <div class="highlight-list">
+            <div class="hl-card reveal" style="transition-delay:.05s;">
+              <div class="t">🪣 Bucket Biryani[cite: 16]</div>
+              <div class="d">Chicken, mutton, fish or prawns, dum-cooked and served in a full-size bucket with rotis, curry &amp; roast — built for the whole family.[cite: 16]</div>
+            </div>
+            <div class="hl-card reveal" style="transition-delay:.12s;">
+              <div class="t">🍚 Choice of rice[cite: 16]</div>
+              <div class="d">Most biryanis are available with Basmathi rice or local Chitty Muthyalu rice, at the same price.[cite: 16]</div>
+            </div>
+            <div class="hl-card reveal" style="transition-delay:.19s;">
+              <div class="t">🎉 Outdoor Catering[cite: 16]</div>
+              <div class="d">Available for parties, functions and events — ask staff for group pricing.[cite: 16]</div>
+            </div>
+            <div class="hl-card reveal" style="transition-delay:.26s;">
+              <div class="t">📦 Family &amp; Combo Packs[cite: 16]</div>
+              <div class="d">Biryani, curry and rotis bundled together across chicken, mutton and veg options.[cite: 16]</div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <section class="maparea" id="visit">
+      <div class="wrap map-grid">
+        <div class="reveal">
+          <h2 class="sec-heading">Find us[cite: 16]</h2>
+          <div class="map-list">
+            <div class="map-row"><div class="k">Address[cite: 16]</div><div class="v">Maria Puram, Kadapa, Andhra Pradesh[cite: 16]</div></div>
+            <div class="map-row"><div class="k">Phone[cite: 16]</div><div class="v"><a href="tel:+919441382762">+91 94413 82762[cite: 16]</a></div></div>
+            <div class="map-row"><div class="k">Hours[cite: 16]</div><div class="v">Open daily, 11:30 AM–10:30 PM[cite: 16]</div></div>
+            <div class="map-row"><div class="k">Rating[cite: 16]</div><div class="v">★ 3.8 · 5,438 Google reviews[cite: 16]</div></div>
+            <div class="map-row"><div class="k">Note[cite: 16]</div><div class="v">Please allow ~20 minutes per order. Orders can't be cancelled once placed or served.[cite: 16]</div></div>
+          </div>
+        </div>
+        <div class="reveal" style="transition-delay:.1s;">
+          <div class="map-box">
+            <iframe src="https://www.google.com/maps?q=14.4719544,78.8234389&output=embed" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+          </div>
+          <div style="text-align:center;margin-top:10px;">
+            <a href="https://maps.google.com/?cid=8069031053081661022" target="_blank" rel="noopener" style="font-size:0.8rem;color:var(--gold);text-decoration:underline;">Open in Google Maps ↗[cite: 16]</a>
+          </div>
+        </div>
       </div>
+    </section>
+
+    <footer>Andhra Spice &amp; Family Restaurant · Maria Puram, Kadapa[cite: 1, 16]</footer>
+  </div>
+
+  <!-- Cart Drawer -->
+  <div class="cart-overlay" id="cartOverlay" onclick="closeDrawer()"></div>
+  <div class="cart-drawer" id="cartDrawer">
+    <div class="cart-drawer-head">
+      <h3>Your Order[cite: 16]</h3>
+      <button class="close-drawer" onclick="closeDrawer()">×</button>
+    </div>
+    <div class="cart-drawer-body" id="cartBody"></div>
+    <div class="cart-drawer-foot">
+      <div class="cart-total-row"><span>Subtotal[cite: 16]</span><span id="drawerTotal">₹0</span></div>
+      <div class="cart-total-row small-row"><span>Delivery[cite: 16]</span><span id="deliveryTotal">₹0</span></div>
+      <div class="cart-total-row grand"><span>Grand Total[cite: 16]</span><span id="grandTotal">₹0</span></div>
+      <button class="order-btn" id="checkoutBtn">Continue to Checkout[cite: 16]</button>
+      <div class="order-note">You can review your details before sending the order to the restaurant.[cite: 16]</div>
     </div>
   </div>
-</section>
 
-<footer>Andhra Spice &amp; Family Restaurant · Maria Puram, Kadapa</footer>
-
-<div class="cart-overlay" id="cartOverlay" onclick="closeDrawer()"></div>
-
-<div class="checkout-overlay" id="checkoutOverlay">
-  <div class="checkout-modal">
-    <div class="checkout-head">
-      <h3 id="checkoutTitle">Customer Details</h3>
-      <button class="close-drawer" onclick="closeCheckout()">×</button>
+  <!-- Floating Cart Bar -->
+  <div class="cart-bar" id="cartBar">
+    <div class="wrap">
+      <div class="cinfo"><b id="cartCount">0 items[cite: 16]</b> &nbsp;·&nbsp; <span id="cartTotal">₹0</span></div>
+      <button class="viewbtn" onclick="openDrawer()">View Cart[cite: 16]</button>
     </div>
+  </div>
 
-    <!-- STEP 1 -->
-    <div id="checkoutStep1">
-      <form id="customerForm">
+  <!-- Checkout Modal -->
+  <div class="checkout-overlay" id="checkoutOverlay">
+    <div class="checkout-modal">
+      <div class="checkout-head">
+        <h3 id="checkoutTitle">Customer Details[cite: 16]</h3>
+        <button class="close-drawer" onclick="closeCheckout()">×</button>
+      </div>
+
+      <!-- STEP 1 -->
+      <div id="checkoutStep1">
+        <form id="customerForm">
+          <div class="checkout-body">
+            <div class="checkout-section">
+              <h4>Order Type[cite: 16]</h4>
+              <div class="choice-grid">
+                <label class="choice active">
+                  <input type="radio" name="orderType" value="delivery" checked>
+                  🚚 Delivery[cite: 16]
+                </label>
+                <label class="choice">
+                  <input type="radio" name="orderType" value="pickup">
+                  🛍 Pickup[cite: 16]
+                </label>
+              </div>
+            </div>
+
+            <div class="checkout-section">
+              <h4>Customer Details[cite: 16]</h4>
+              <label>Full Name[cite: 16]
+                <input id="customerName" required maxlength="60" placeholder="Enter your name">
+              </label>
+
+              <label>Mobile Number[cite: 16]
+                <input id="customerPhone" required inputmode="numeric" pattern="[0-9]{10}" maxlength="10" placeholder="10-digit mobile number">
+              </label>
+
+              <label id="addressWrap">Delivery Address[cite: 16]
+                <textarea id="customerAddress" maxlength="250" placeholder="House / Street / Area / Landmark"></textarea>
+              </label>
+
+              <label id="tableWrap" class="hidden">Table Number / Pickup Note[cite: 16]
+                <input id="tableNumber" maxlength="60" placeholder="Optional">
+              </label>
+            </div>
+
+            <div class="checkout-section">
+              <h4>Payment Method[cite: 16]</h4>
+              <div class="choice-grid">
+                <label class="choice active">
+                  <input type="radio" name="paymentMethod" value="cod" checked>
+                  💵 Cash on Delivery[cite: 16]
+                </label>
+                <label class="choice">
+                  <input type="radio" name="paymentMethod" value="pickup">
+                  🏪 Pay at Pickup[cite: 16]
+                </label>
+              </div>
+              <div class="payment-box" style="margin-top:10px;">
+                <b>Cash / Pickup payment only[cite: 16]</b>
+                <span>No online payment is required for this test version.[cite: 16]</span>
+              </div>
+            </div>
+
+            <div id="formError" class="form-error" role="alert"></div>
+          </div>
+
+          <div class="checkout-foot">
+            <button type="button" class="secondary-btn" onclick="closeCheckout()">Cancel[cite: 16]</button>
+            <button type="submit" class="order-btn">Done[cite: 16]</button>
+          </div>
+        </form>
+      </div>
+
+      <!-- STEP 2 -->
+      <div id="checkoutStep2" class="hidden">
         <div class="checkout-body">
           <div class="checkout-section">
-            <h4>Order Type</h4>
-            <div class="choice-grid">
-              <label class="choice active">
-                <input type="radio" name="orderType" value="delivery" checked>
-                🚚 Delivery
-              </label>
-              <label class="choice">
-                <input type="radio" name="orderType" value="pickup">
-                🛍 Pickup
-              </label>
-            </div>
+            <h4>Confirm Your Order[cite: 16]</h4>
+            <div id="finalCustomerDetails" class="payment-box"></div>
           </div>
 
           <div class="checkout-section">
-            <h4>Customer Details</h4>
-            <label>Full Name
-              <input id="customerName" required maxlength="60" placeholder="Enter your name">
-            </label>
-
-            <label>Mobile Number
-              <input id="customerPhone" required inputmode="numeric" pattern="[0-9]{10}" maxlength="10" placeholder="10-digit mobile number">
-            </label>
-
-            <label id="addressWrap">Delivery Address
-              <textarea id="customerAddress" maxlength="250" placeholder="House / Street / Area / Landmark"></textarea>
-            </label>
-
-            <label id="tableWrap" class="hidden">Table Number / Pickup Note
-              <input id="tableNumber" maxlength="60" placeholder="Optional">
-            </label>
+            <h4>Order List[cite: 16]</h4>
+            <div id="checkoutSummary"></div>
+            <div class="checkout-total"><span>Subtotal[cite: 16]</span><b id="confirmSubtotal">₹0</b></div>
+            <div class="checkout-total" style="font-size:.9rem;margin-top:6px;"><span>Delivery[cite: 16]</span><b id="confirmDelivery">₹0</b></div>
+            <div class="checkout-total" style="margin-top:10px;"><span>Grand Total[cite: 16]</span><b id="checkoutGrandTotal">₹0</b></div>
           </div>
 
-          <div class="checkout-section">
-            <h4>Payment Method</h4>
-            <div class="choice-grid">
-              <label class="choice active">
-                <input type="radio" name="paymentMethod" value="cod" checked>
-                💵 Cash on Delivery
-              </label>
-              <label class="choice">
-                <input type="radio" name="paymentMethod" value="pickup">
-                🏪 Pay at Pickup
-              </label>
-            </div>
-            <div class="payment-box" style="margin-top:10px;">
-              <b>Cash / Pickup payment only</b>
-              <span>No online payment is required for this test version.</span>
-            </div>
-          </div>
-
-          <div id="formError" class="form-error" role="alert"></div>
+          <div id="confirmError" class="form-error" role="alert"></div>
         </div>
 
         <div class="checkout-foot">
-          <button type="button" class="secondary-btn" onclick="closeCheckout()">Cancel</button>
-          <button type="submit" class="order-btn">Done</button>
+          <button type="button" class="secondary-btn" onclick="backToDetails()">Back[cite: 16]</button>
+          <button type="button" class="order-btn" id="confirmOrderBtn">Confirm Order[cite: 16]</button>
         </div>
-      </form>
-    </div>
-
-    <!-- STEP 2 -->
-    <div id="checkoutStep2" class="hidden">
-      <div class="checkout-body">
-        <div class="checkout-section">
-          <h4>Confirm Your Order</h4>
-          <div id="finalCustomerDetails" class="payment-box"></div>
-        </div>
-
-        <div class="checkout-section">
-          <h4>Order List</h4>
-          <div id="checkoutSummary"></div>
-          <div class="checkout-total"><span>Subtotal</span><b id="confirmSubtotal">₹0</b></div>
-          <div class="checkout-total" style="font-size:.9rem;margin-top:6px;"><span>Delivery</span><b id="confirmDelivery">₹0</b></div>
-          <div class="checkout-total" style="margin-top:10px;"><span>Grand Total</span><b id="checkoutGrandTotal">₹0</b></div>
-        </div>
-
-        <div id="confirmError" class="form-error" role="alert"></div>
-      </div>
-
-      <div class="checkout-foot">
-        <button type="button" class="secondary-btn" onclick="backToDetails()">Back</button>
-        <button type="button" class="order-btn" id="confirmOrderBtn">Confirm Order</button>
       </div>
     </div>
   </div>
-</div>
 
-<div class="cart-drawer" id="cartDrawer">
-  <div class="cart-drawer-head">
-    <h3>Your Order</h3>
-    <button class="close-drawer" onclick="closeDrawer()">×</button>
-  </div>
-  <div class="cart-drawer-body" id="cartBody"></div>
-  <div class="cart-drawer-foot">
-    <div class="cart-total-row"><span>Subtotal</span><span id="drawerTotal">₹0</span></div>
-    <div class="cart-total-row small-row"><span>Delivery</span><span id="deliveryTotal">₹0</span></div>
-    <div class="cart-total-row grand"><span>Grand Total</span><span id="grandTotal">₹0</span></div>
-    <button class="order-btn" id="checkoutBtn">Continue to Checkout</button>
-    <div class="order-note">You can review your details before sending the order to the restaurant.</div>
-  </div>
-</div>
+  <script>
+    const RESTAURANT_PHONE = "919441382762";[cite: 16]
+    const DELIVERY_CHARGE = 40;[cite: 16]
 
-<div class="cart-bar" id="cartBar">
-  <div class="wrap">
-    <div class="cinfo"><b id="cartCount">0 items</b> &nbsp;·&nbsp; <span id="cartTotal">₹0</span></div>
-    <button class="viewbtn" onclick="openDrawer()">View Cart</button>
-  </div>
-</div>
+    // 1-to-1 Reliable Image Dictionary (Direct Unsplash CDN - No blocked hotlinking)
+    const UNIQUE_DISH_IMAGES = {
+      // Fried Rice
+      "curd rice": "https://images.unsplash.com/photo-1546833999-b9f581a1996d?w=500&auto=format&fit=crop&q=80",
+      "spl. curd rice": "https://images.unsplash.com/photo-1512058564366-18510be2db19?w=500&auto=format&fit=crop&q=80",
+      "veg fried rice": "https://images.unsplash.com/photo-1603133872878-684f208fb84b?w=500&auto=format&fit=crop&q=80",
+      "gobi fried rice": "https://images.unsplash.com/photo-1645177628172-a94c1f96e6db?w=500&auto=format&fit=crop&q=80",
+      "mushroom fried rice": "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=500&auto=format&fit=crop&q=80",
+      "paneer fried rice": "https://images.unsplash.com/photo-1631452180519-c014fe946bc7?w=500&auto=format&fit=crop&q=80",
+      "paneer mushroom fried rice": "https://images.unsplash.com/photo-1589302168068-964664d93dc0?w=500&auto=format&fit=crop&q=80",
+      "capsicum fried rice": "https://images.unsplash.com/photo-1596797038530-2c107229654b?w=500&auto=format&fit=crop&q=80",
+      "kaju fried rice": "https://images.unsplash.com/photo-1565557623262-b51c2513a641?w=500&auto=format&fit=crop&q=80",
+      "kaju paneer fried rice": "https://images.unsplash.com/photo-1567188040759-fb8a883dc6d8?w=500&auto=format&fit=crop&q=80",
+      "jeera fried rice": "https://images.unsplash.com/photo-1539136788836-5699e78bfc75?w=500&auto=format&fit=crop&q=80",
+      "veg mixed fried rice": "https://images.unsplash.com/photo-1626777552726-4a6b54c97e46?w=500&auto=format&fit=crop&q=80",
+      "egg fried rice": "https://images.unsplash.com/photo-1525755662778-989d0524087e?w=500&auto=format&fit=crop&q=80",
+      "spl. egg fried rice": "https://images.unsplash.com/photo-1594998893017-36147cbcae05?w=500&auto=format&fit=crop&q=80",
+      "chicken fried rice": "https://images.unsplash.com/photo-1603133872878-684f208fb84b?w=500&auto=format&fit=crop&q=80",
+      "special chicken fried rice": "https://images.unsplash.com/photo-1563379091339-03b21ab4a4f8?w=500&auto=format&fit=crop&q=80",
+      "non-veg mixed fried rice": "https://images.unsplash.com/photo-1544025162-d76694265947?w=500&auto=format&fit=crop&q=80",
+      "mutton fried rice": "https://images.unsplash.com/photo-1633945274405-b6c8069047b0?w=500&auto=format&fit=crop&q=80",
+      "spl. mutton fried rice": "https://images.unsplash.com/photo-1603894584373-5ac82b2ae398?w=500&auto=format&fit=crop&q=80",
+      "fish fried rice": "https://images.unsplash.com/photo-1534939561126-855b8675edd7?w=500&auto=format&fit=crop&q=80",
+      "prawns fried rice": "https://images.unsplash.com/photo-1559742811-822873691df8?w=500&auto=format&fit=crop&q=80",
 
-<script>
+      // Special Biryani & Dry
+      "gongura chicken biryani": "https://images.unsplash.com/photo-1589302168068-964664d93dc0?w=500&auto=format&fit=crop&q=80",
+      "gongura mutton biryani": "https://images.unsplash.com/photo-1633945274405-b6c8069047b0?w=500&auto=format&fit=crop&q=80",
+      "ulavacharu chicken biryani": "https://images.unsplash.com/photo-1563379091339-03b21ab4a4f8?w=500&auto=format&fit=crop&q=80",
+      "ulavacharu mutton biryani": "https://images.unsplash.com/photo-1544025162-d76694265947?w=500&auto=format&fit=crop&q=80",
+      "mutton nalli ghost biryani": "https://images.unsplash.com/photo-1603894584373-5ac82b2ae398?w=500&auto=format&fit=crop&q=80",
 
-  const RESTAURANT_PHONE = "919441382762";
-  const DELIVERY_CHARGE = 40;
+      // Biryani
+      "biryani rice": "https://images.unsplash.com/photo-1512058564366-18510be2db19?w=500&auto=format&fit=crop&q=80",
+      "veg biryani": "https://images.unsplash.com/photo-1645177628172-a94c1f96e6db?w=500&auto=format&fit=crop&q=80",
+      "paneer biryani": "https://images.unsplash.com/photo-1631452180519-c014fe946bc7?w=500&auto=format&fit=crop&q=80",
+      "kaju biryani": "https://images.unsplash.com/photo-1565557623262-b51c2513a641?w=500&auto=format&fit=crop&q=80",
+      "mushroom biryani": "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=500&auto=format&fit=crop&q=80",
+      "kaju & paneer biryani": "https://images.unsplash.com/photo-1567188040759-fb8a883dc6d8?w=500&auto=format&fit=crop&q=80",
+      "egg biryani": "https://images.unsplash.com/photo-1525755662778-989d0524087e?w=500&auto=format&fit=crop&q=80",
+      "chicken dum biryani": "https://images.unsplash.com/photo-1563379091339-03b21ab4a4f8?w=500&auto=format&fit=crop&q=80",
+      "chicken leg piece biryani": "https://images.unsplash.com/photo-1599488615731-7e5c2823ff28?w=500&auto=format&fit=crop&q=80",
+      "special chicken biryani": "https://images.unsplash.com/photo-1626777552726-4a6b54c97e46?w=500&auto=format&fit=crop&q=80",
+      "chicken lollipop biryani": "https://images.unsplash.com/photo-1610057099443-fde8c4d50f91?w=500&auto=format&fit=crop&q=80",
+      "mutton dum biryani": "https://images.unsplash.com/photo-1633945274405-b6c8069047b0?w=500&auto=format&fit=crop&q=80",
+      "keema biryani": "https://images.unsplash.com/photo-1544025162-d76694265947?w=500&auto=format&fit=crop&q=80",
+      "special mutton biryani": "https://images.unsplash.com/photo-1603894584373-5ac82b2ae398?w=500&auto=format&fit=crop&q=80",
+      "fish biryani": "https://images.unsplash.com/photo-1534939561126-855b8675edd7?w=500&auto=format&fit=crop&q=80",
+      "prawns biryani": "https://images.unsplash.com/photo-1559742811-822873691df8?w=500&auto=format&fit=crop&q=80",
+      "natukodi biryani": "https://images.unsplash.com/photo-1589302168068-964664d93dc0?w=500&auto=format&fit=crop&q=80",
+      "chicken biryani fry pcs": "https://images.unsplash.com/photo-1562967914-608f82629710?w=500&auto=format&fit=crop&q=80",
+      "mutton biryani fry pcs": "https://images.unsplash.com/photo-1603894584373-5ac82b2ae398?w=500&auto=format&fit=crop&q=80",
+      "chicken family pack": "https://images.unsplash.com/photo-1563379091339-03b21ab4a4f8?w=500&auto=format&fit=crop&q=80",
+      "chicken leg piece family pack": "https://images.unsplash.com/photo-1599488615731-7e5c2823ff28?w=500&auto=format&fit=crop&q=80",
+      "special chicken family pack": "https://images.unsplash.com/photo-1626777552726-4a6b54c97e46?w=500&auto=format&fit=crop&q=80",
+      "mutton family pack": "https://images.unsplash.com/photo-1633945274405-b6c8069047b0?w=500&auto=format&fit=crop&q=80",
+      "special mutton family pack": "https://images.unsplash.com/photo-1544025162-d76694265947?w=500&auto=format&fit=crop&q=80",
+      "chicken biryani couple pack": "https://images.unsplash.com/photo-1563379091339-03b21ab4a4f8?w=500&auto=format&fit=crop&q=80",
+      "spl. chicken biryani couple pack": "https://images.unsplash.com/photo-1589302168068-964664d93dc0?w=500&auto=format&fit=crop&q=80",
+      "mutton biryani couple pack": "https://images.unsplash.com/photo-1633945274405-b6c8069047b0?w=500&auto=format&fit=crop&q=80",
+      "mini jambo pack biryani": "https://images.unsplash.com/photo-1563379091339-03b21ab4a4f8?w=500&auto=format&fit=crop&q=80",
+      "jambo pack biryani": "https://images.unsplash.com/photo-1633945274405-b6c8069047b0?w=500&auto=format&fit=crop&q=80",
 
-  const UNIQUE_DISH_IMAGES = {
-    // Fried Rice
-    "curd rice": "https://images.unsplash.com/photo-1546833999-b9f581a1996d?w=500&auto=format&fit=crop&q=80",
-    "spl. curd rice": "https://images.unsplash.com/photo-1512058564366-18510be2db19?w=500&auto=format&fit=crop&q=80",
-    "veg fried rice": "https://images.unsplash.com/photo-1603133872878-684f208fb84b?w=500&auto=format&fit=crop&q=80",
-    "gobi fried rice": "https://images.unsplash.com/photo-1645177628172-a94c1f96e6db?w=500&auto=format&fit=crop&q=80",
-    "mushroom fried rice": "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=500&auto=format&fit=crop&q=80",
-    "paneer fried rice": "https://images.unsplash.com/photo-1631452180519-c014fe946bc7?w=500&auto=format&fit=crop&q=80",
-    "paneer mushroom fried rice": "https://images.unsplash.com/photo-1589302168068-964664d93dc0?w=500&auto=format&fit=crop&q=80",
-    "capsicum fried rice": "https://images.unsplash.com/photo-1596797038530-2c107229654b?w=500&auto=format&fit=crop&q=80",
-    "kaju fried rice": "https://images.unsplash.com/photo-1565557623262-b51c2513a641?w=500&auto=format&fit=crop&q=80",
-    "kaju paneer fried rice": "https://images.unsplash.com/photo-1567188040759-fb8a883dc6d8?w=500&auto=format&fit=crop&q=80",
-    "jeera fried rice": "https://images.unsplash.com/photo-1539136788836-5699e78bfc75?w=500&auto=format&fit=crop&q=80",
-    "veg mixed fried rice": "https://images.unsplash.com/photo-1626777552726-4a6b54c97e46?w=500&auto=format&fit=crop&q=80",
-    "egg fried rice": "https://images.unsplash.com/photo-1525755662778-989d0524087e?w=500&auto=format&fit=crop&q=80",
-    "spl. egg fried rice": "https://images.unsplash.com/photo-1594998893017-36147cbcae05?w=500&auto=format&fit=crop&q=80",
-    "chicken fried rice": "https://images.unsplash.com/photo-1603133872878-684f208fb84b?w=500&auto=format&fit=crop&q=80",
-    "special chicken fried rice": "https://images.unsplash.com/photo-1563379091339-03b21ab4a4f8?w=500&auto=format&fit=crop&q=80",
-    "non-veg mixed fried rice": "https://images.unsplash.com/photo-1544025162-d76694265947?w=500&auto=format&fit=crop&q=80",
-    "mutton fried rice": "https://images.unsplash.com/photo-1633945274405-b6c8069047b0?w=500&auto=format&fit=crop&q=80",
-    "spl. mutton fried rice": "https://images.unsplash.com/photo-1603894584373-5ac82b2ae398?w=500&auto=format&fit=crop&q=80",
-    "fish fried rice": "https://images.unsplash.com/photo-1534939561126-855b8675edd7?w=500&auto=format&fit=crop&q=80",
-    "prawns fried rice": "https://images.unsplash.com/photo-1559742811-822873691df8?w=500&auto=format&fit=crop&q=80",
+      // Kunda & Bongu
+      "veg kunda biryani": "https://images.unsplash.com/photo-1589302168068-964664d93dc0?w=500&auto=format&fit=crop&q=80",
+      "veg kunda family pack": "https://images.unsplash.com/photo-1645177628172-a94c1f96e6db?w=500&auto=format&fit=crop&q=80",
+      "chicken kunda biryani": "https://images.unsplash.com/photo-1589302168068-964664d93dc0?w=500&auto=format&fit=crop&q=80",
+      "chicken kunda family pack": "https://images.unsplash.com/photo-1563379091339-03b21ab4a4f8?w=500&auto=format&fit=crop&q=80",
+      "mutton kunda biryani": "https://images.unsplash.com/photo-1633945274405-b6c8069047b0?w=500&auto=format&fit=crop&q=80",
+      "mutton kunda family pack": "https://images.unsplash.com/photo-1603894584373-5ac82b2ae398?w=500&auto=format&fit=crop&q=80",
+      "chicken bongu biryani": "https://images.unsplash.com/photo-1589302168068-964664d93dc0?w=500&auto=format&fit=crop&q=80",
+      "spl chicken bongu biryani": "https://images.unsplash.com/photo-1563379091339-03b21ab4a4f8?w=500&auto=format&fit=crop&q=80",
+      "mutton bongu biryani": "https://images.unsplash.com/photo-1633945274405-b6c8069047b0?w=500&auto=format&fit=crop&q=80",
+      "spl mutton bongu biryani": "https://images.unsplash.com/photo-1544025162-d76694265947?w=500&auto=format&fit=crop&q=80",
 
-    // Special Biryani & Dry
-    "gongura chicken biryani": "https://images.unsplash.com/photo-1589302168068-964664d93dc0?w=500&auto=format&fit=crop&q=80",
-    "gongura mutton biryani": "https://images.unsplash.com/photo-1633945274405-b6c8069047b0?w=500&auto=format&fit=crop&q=80",
-    "ulavacharu chicken biryani": "https://images.unsplash.com/photo-1563379091339-03b21ab4a4f8?w=500&auto=format&fit=crop&q=80",
-    "ulavacharu mutton biryani": "https://images.unsplash.com/photo-1544025162-d76694265947?w=500&auto=format&fit=crop&q=80",
-    "mutton nalli ghost biryani": "https://images.unsplash.com/photo-1603894584373-5ac82b2ae398?w=500&auto=format&fit=crop&q=80",
+      // Bucket Biryani
+      "bucket chicken biryani": "https://images.unsplash.com/photo-1563379091339-03b21ab4a4f8?w=500&auto=format&fit=crop&q=80",
+      "bucket spl. chicken biryani": "https://images.unsplash.com/photo-1589302168068-964664d93dc0?w=500&auto=format&fit=crop&q=80",
+      "bucket mutton biryani": "https://images.unsplash.com/photo-1633945274405-b6c8069047b0?w=500&auto=format&fit=crop&q=80",
+      "bucket fish biryani": "https://images.unsplash.com/photo-1534939561126-855b8675edd7?w=500&auto=format&fit=crop&q=80",
+      "bucket prawns biryani": "https://images.unsplash.com/photo-1559742811-822873691df8?w=500&auto=format&fit=crop&q=80",
+      "mini bucket chicken biryani": "https://images.unsplash.com/photo-1563379091339-03b21ab4a4f8?w=500&auto=format&fit=crop&q=80",
+      "mini bucket spl. chicken biryani": "https://images.unsplash.com/photo-1626777552726-4a6b54c97e46?w=500&auto=format&fit=crop&q=80",
+      "mini bucket mutton biryani": "https://images.unsplash.com/photo-1633945274405-b6c8069047b0?w=500&auto=format&fit=crop&q=80",
+      "mini bucket fish biryani": "https://images.unsplash.com/photo-1534939561126-855b8675edd7?w=500&auto=format&fit=crop&q=80",
+      "mini bucket prawns biryani": "https://images.unsplash.com/photo-1559742811-822873691df8?w=500&auto=format&fit=crop&q=80",
 
-    // Biryani (Basmathi / Local Rice)
-    "biryani rice": "https://images.unsplash.com/photo-1512058564366-18510be2db19?w=500&auto=format&fit=crop&q=80",
-    "veg biryani": "https://images.unsplash.com/photo-1645177628172-a94c1f96e6db?w=500&auto=format&fit=crop&q=80",
-    "paneer biryani": "https://images.unsplash.com/photo-1631452180519-c014fe946bc7?w=500&auto=format&fit=crop&q=80",
-    "kaju biryani": "https://images.unsplash.com/photo-1565557623262-b51c2513a641?w=500&auto=format&fit=crop&q=80",
-    "mushroom biryani": "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=500&auto=format&fit=crop&q=80",
-    "kaju & paneer biryani": "https://images.unsplash.com/photo-1567188040759-fb8a883dc6d8?w=500&auto=format&fit=crop&q=80",
-    "egg biryani": "https://images.unsplash.com/photo-1525755662778-989d0524087e?w=500&auto=format&fit=crop&q=80",
-    "chicken dum biryani": "https://images.unsplash.com/photo-1563379091339-03b21ab4a4f8?w=500&auto=format&fit=crop&q=80",
-    "chicken leg piece biryani": "https://images.unsplash.com/photo-1599488615731-7e5c2823ff28?w=500&auto=format&fit=crop&q=80",
-    "special chicken biryani": "https://images.unsplash.com/photo-1626777552726-4a6b54c97e46?w=500&auto=format&fit=crop&q=80",
-    "chicken lollipop biryani": "https://images.unsplash.com/photo-1610057099443-fde8c4d50f91?w=500&auto=format&fit=crop&q=80",
-    "mutton dum biryani": "https://images.unsplash.com/photo-1633945274405-b6c8069047b0?w=500&auto=format&fit=crop&q=80",
-    "keema biryani": "https://images.unsplash.com/photo-1544025162-d76694265947?w=500&auto=format&fit=crop&q=80",
-    "special mutton biryani": "https://images.unsplash.com/photo-1603894584373-5ac82b2ae398?w=500&auto=format&fit=crop&q=80",
-    "fish biryani": "https://images.unsplash.com/photo-1534939561126-855b8675edd7?w=500&auto=format&fit=crop&q=80",
-    "prawns biryani": "https://images.unsplash.com/photo-1559742811-822873691df8?w=500&auto=format&fit=crop&q=80",
-    "natukodi biryani": "https://images.unsplash.com/photo-1589302168068-964664d93dc0?w=500&auto=format&fit=crop&q=80",
-    "chicken biryani fry pcs": "https://images.unsplash.com/photo-1562967914-608f82629710?w=500&auto=format&fit=crop&q=80",
-    "mutton biryani fry pcs": "https://images.unsplash.com/photo-1603894584373-5ac82b2ae398?w=500&auto=format&fit=crop&q=80",
-    "chicken family pack": "https://images.unsplash.com/photo-1563379091339-03b21ab4a4f8?w=500&auto=format&fit=crop&q=80",
-    "chicken leg piece family pack": "https://images.unsplash.com/photo-1599488615731-7e5c2823ff28?w=500&auto=format&fit=crop&q=80",
-    "special chicken family pack": "https://images.unsplash.com/photo-1626777552726-4a6b54c97e46?w=500&auto=format&fit=crop&q=80",
-    "mutton family pack": "https://images.unsplash.com/photo-1633945274405-b6c8069047b0?w=500&auto=format&fit=crop&q=80",
-    "special mutton family pack": "https://images.unsplash.com/photo-1544025162-d76694265947?w=500&auto=format&fit=crop&q=80",
-    "chicken biryani couple pack": "https://images.unsplash.com/photo-1563379091339-03b21ab4a4f8?w=500&auto=format&fit=crop&q=80",
-    "spl. chicken biryani couple pack": "https://images.unsplash.com/photo-1589302168068-964664d93dc0?w=500&auto=format&fit=crop&q=80",
-    "mutton biryani couple pack": "https://images.unsplash.com/photo-1633945274405-b6c8069047b0?w=500&auto=format&fit=crop&q=80",
-    "mini jambo pack biryani": "https://images.unsplash.com/photo-1563379091339-03b21ab4a4f8?w=500&auto=format&fit=crop&q=80",
-    "jambo pack biryani": "https://images.unsplash.com/photo-1633945274405-b6c8069047b0?w=500&auto=format&fit=crop&q=80",
+      // Starters - Non-Veg
+      "tangadi kabab (1 pc.)": "https://images.unsplash.com/photo-1626777552726-4a6b54c97e46?w=500&auto=format&fit=crop&q=80",
+      "tangadi kabab (4 pcs.)": "https://images.unsplash.com/photo-1599488615731-7e5c2823ff28?w=500&auto=format&fit=crop&q=80",
+      "tandoori chicken half": "https://images.unsplash.com/photo-1599488615731-7e5c2823ff28?w=500&auto=format&fit=crop&q=80",
+      "tandoori chicken full": "https://images.unsplash.com/photo-1599488615731-7e5c2823ff28?w=500&auto=format&fit=crop&q=80",
+      "chicken tikka (8 pcs.)": "https://images.unsplash.com/photo-1599488615731-7e5c2823ff28?w=500&auto=format&fit=crop&q=80",
+      "malai tikka (8 pcs.)": "https://images.unsplash.com/photo-1555939594-58d7cb561ad1?w=500&auto=format&fit=crop&q=80",
+      "zafrani tikka (8 pcs.)": "https://images.unsplash.com/photo-1555939594-58d7cb561ad1?w=500&auto=format&fit=crop&q=80",
+      "achari tikka (8 pcs.)": "https://images.unsplash.com/photo-1599488615731-7e5c2823ff28?w=500&auto=format&fit=crop&q=80",
+      "hariyali kabab (8 pcs.)": "https://images.unsplash.com/photo-1565557623262-b51c2513a641?w=500&auto=format&fit=crop&q=80",
 
-    // Kunda & Bongu Biryani
-    "veg kunda biryani": "https://images.unsplash.com/photo-1589302168068-964664d93dc0?w=500&auto=format&fit=crop&q=80",
-    "veg kunda family pack": "https://images.unsplash.com/photo-1645177628172-a94c1f96e6db?w=500&auto=format&fit=crop&q=80",
-    "chicken kunda biryani": "https://images.unsplash.com/photo-1589302168068-964664d93dc0?w=500&auto=format&fit=crop&q=80",
-    "chicken kunda family pack": "https://images.unsplash.com/photo-1563379091339-03b21ab4a4f8?w=500&auto=format&fit=crop&q=80",
-    "mutton kunda biryani": "https://images.unsplash.com/photo-1633945274405-b6c8069047b0?w=500&auto=format&fit=crop&q=80",
-    "mutton kunda family pack": "https://images.unsplash.com/photo-1603894584373-5ac82b2ae398?w=500&auto=format&fit=crop&q=80",
-    "chicken bongu biryani": "https://images.unsplash.com/photo-1589302168068-964664d93dc0?w=500&auto=format&fit=crop&q=80",
-    "spl chicken bongu biryani": "https://images.unsplash.com/photo-1563379091339-03b21ab4a4f8?w=500&auto=format&fit=crop&q=80",
-    "mutton bongu biryani": "https://images.unsplash.com/photo-1633945274405-b6c8069047b0?w=500&auto=format&fit=crop&q=80",
-    "spl mutton bongu biryani": "https://images.unsplash.com/photo-1544025162-d76694265947?w=500&auto=format&fit=crop&q=80",
+      // Starters - Veg
+      "paneer tikka (8 pcs.)": "https://images.unsplash.com/photo-1567188040759-fb8a883dc6d8?w=500&auto=format&fit=crop&q=80",
+      "paneer garlic kabab (8 pcs.)": "https://images.unsplash.com/photo-1567188040759-fb8a883dc6d8?w=500&auto=format&fit=crop&q=80",
+      "harayali paneer (8 pcs.)": "https://images.unsplash.com/photo-1565557623262-b51c2513a641?w=500&auto=format&fit=crop&q=80",
+      "paneer chatpat kabab (8 pcs.)": "https://images.unsplash.com/photo-1567188040759-fb8a883dc6d8?w=500&auto=format&fit=crop&q=80",
 
-    // Bucket Biryani
-    "bucket chicken biryani": "https://images.unsplash.com/photo-1563379091339-03b21ab4a4f8?w=500&auto=format&fit=crop&q=80",
-    "bucket spl. chicken biryani": "https://images.unsplash.com/photo-1589302168068-964664d93dc0?w=500&auto=format&fit=crop&q=80",
-    "bucket mutton biryani": "https://images.unsplash.com/photo-1633945274405-b6c8069047b0?w=500&auto=format&fit=crop&q=80",
-    "bucket fish biryani": "https://images.unsplash.com/photo-1534939561126-855b8675edd7?w=500&auto=format&fit=crop&q=80",
-    "bucket prawns biryani": "https://images.unsplash.com/photo-1559742811-822873691df8?w=500&auto=format&fit=crop&q=80",
-    "mini bucket chicken biryani": "https://images.unsplash.com/photo-1563379091339-03b21ab4a4f8?w=500&auto=format&fit=crop&q=80",
-    "mini bucket spl. chicken biryani": "https://images.unsplash.com/photo-1626777552726-4a6b54c97e46?w=500&auto=format&fit=crop&q=80",
-    "mini bucket mutton biryani": "https://images.unsplash.com/photo-1633945274405-b6c8069047b0?w=500&auto=format&fit=crop&q=80",
-    "mini bucket fish biryani": "https://images.unsplash.com/photo-1534939561126-855b8675edd7?w=500&auto=format&fit=crop&q=80",
-    "mini bucket prawns biryani": "https://images.unsplash.com/photo-1559742811-822873691df8?w=500&auto=format&fit=crop&q=80",
+      // Starters - Prawns
+      "prawns 65 (dry)": "https://images.unsplash.com/photo-1610057099443-fde8c4d50f91?w=500&auto=format&fit=crop&q=80",
+      "pepper prawns": "https://images.unsplash.com/photo-1559742811-822873691df8?w=500&auto=format&fit=crop&q=80",
+      "loose prawns (dry)": "https://images.unsplash.com/photo-1559742811-822873691df8?w=500&auto=format&fit=crop&q=80",
+      "ginger prawns (dry)": "https://images.unsplash.com/photo-1559742811-822873691df8?w=500&auto=format&fit=crop&q=80",
+      "golden fried prawns (dry)": "https://images.unsplash.com/photo-1562967914-608f82629710?w=500&auto=format&fit=crop&q=80",
+      "prawns roast (dry)": "https://images.unsplash.com/photo-1559742811-822873691df8?w=500&auto=format&fit=crop&q=80",
 
-    // Starters - Non-Veg
-    "tangadi kabab (1 pc.)": "https://images.unsplash.com/photo-1626777552726-4a6b54c97e46?w=500&auto=format&fit=crop&q=80",
-    "tangadi kabab (4 pcs.)": "https://images.unsplash.com/photo-1599488615731-7e5c2823ff28?w=500&auto=format&fit=crop&q=80",
-    "tandoori chicken half": "https://images.unsplash.com/photo-1599488615731-7e5c2823ff28?w=500&auto=format&fit=crop&q=80",
-    "tandoori chicken full": "https://images.unsplash.com/photo-1599488615731-7e5c2823ff28?w=500&auto=format&fit=crop&q=80",
-    "chicken tikka (8 pcs.)": "https://images.unsplash.com/photo-1599488615731-7e5c2823ff28?w=500&auto=format&fit=crop&q=80",
-    "malai tikka (8 pcs.)": "https://images.unsplash.com/photo-1555939594-58d7cb561ad1?w=500&auto=format&fit=crop&q=80",
-    "zafrani tikka (8 pcs.)": "https://images.unsplash.com/photo-1555939594-58d7cb561ad1?w=500&auto=format&fit=crop&q=80",
-    "achari tikka (8 pcs.)": "https://images.unsplash.com/photo-1599488615731-7e5c2823ff28?w=500&auto=format&fit=crop&q=80",
-    "hariyali kabab (8 pcs.)": "https://images.unsplash.com/photo-1565557623262-b51c2513a641?w=500&auto=format&fit=crop&q=80",
+      // Veg Curries
+      "tomato curry": "https://images.unsplash.com/photo-1546833999-b9f581a1996d?w=500&auto=format&fit=crop&q=80",
+      "dal fry": "https://images.unsplash.com/photo-1546833999-b9f581a1996d?w=500&auto=format&fit=crop&q=80",
+      "dal tadka": "https://images.unsplash.com/photo-1546833999-b9f581a1996d?w=500&auto=format&fit=crop&q=80",
+      "capsicum curry": "https://images.unsplash.com/photo-1596797038530-2c107229654b?w=500&auto=format&fit=crop&q=80",
+      "veg. kolapuri": "https://images.unsplash.com/photo-1585937421612-70a008356fbe?w=500&auto=format&fit=crop&q=80",
+      "aloo mutter": "https://images.unsplash.com/photo-1585937421612-70a008356fbe?w=500&auto=format&fit=crop&q=80",
+      "aloo gobi": "https://images.unsplash.com/photo-1645177628172-a94c1f96e6db?w=500&auto=format&fit=crop&q=80",
+      "gobi mutter": "https://images.unsplash.com/photo-1645177628172-a94c1f96e6db?w=500&auto=format&fit=crop&q=80",
+      "veg kayamath": "https://images.unsplash.com/photo-1585937421612-70a008356fbe?w=500&auto=format&fit=crop&q=80",
+      "methi chaman": "https://images.unsplash.com/photo-1631452180519-c014fe946bc7?w=500&auto=format&fit=crop&q=80",
+      "paneer sai kurma": "https://images.unsplash.com/photo-1631452180519-c014fe946bc7?w=500&auto=format&fit=crop&q=80",
+      "veg. kofta": "https://images.unsplash.com/photo-1585937421612-70a008356fbe?w=500&auto=format&fit=crop&q=80",
+      "malai kofta": "https://images.unsplash.com/photo-1585937421612-70a008356fbe?w=500&auto=format&fit=crop&q=80",
+      "baby corn masala": "https://images.unsplash.com/photo-1585937421612-70a008356fbe?w=500&auto=format&fit=crop&q=80",
+      "mix veg curry": "https://images.unsplash.com/photo-1585937421612-70a008356fbe?w=500&auto=format&fit=crop&q=80",
+      "veg. patiyala": "https://images.unsplash.com/photo-1585937421612-70a008356fbe?w=500&auto=format&fit=crop&q=80",
+      "kadai veg": "https://images.unsplash.com/photo-1585937421612-70a008356fbe?w=500&auto=format&fit=crop&q=80",
+      "aloo palak": "https://images.unsplash.com/photo-1546833999-b9f581a1996d?w=500&auto=format&fit=crop&q=80",
+      "plain palak": "https://images.unsplash.com/photo-1546833999-b9f581a1996d?w=500&auto=format&fit=crop&q=80",
+      "palak paneer": "https://images.unsplash.com/photo-1631452180519-c014fe946bc7?w=500&auto=format&fit=crop&q=80",
+      "kadai paneer": "https://images.unsplash.com/photo-1631452180519-c014fe946bc7?w=500&auto=format&fit=crop&q=80",
+      "mushroom masala": "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=500&auto=format&fit=crop&q=80",
+      "mushroom curry / fry": "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=500&auto=format&fit=crop&q=80",
+      "paneer butter masala": "https://images.unsplash.com/photo-1631452180519-c014fe946bc7?w=500&auto=format&fit=crop&q=80",
+      "paneer mutter": "https://images.unsplash.com/photo-1631452180519-c014fe946bc7?w=500&auto=format&fit=crop&q=80",
+      "paneer mushroom curry": "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=500&auto=format&fit=crop&q=80",
+      "kaju paneer curry": "https://images.unsplash.com/photo-1567188040759-fb8a883dc6d8?w=500&auto=format&fit=crop&q=80",
+      "kaju curry": "https://images.unsplash.com/photo-1565557623262-b51c2513a641?w=500&auto=format&fit=crop&q=80",
 
-    // Starters - Veg
-    "paneer tikka (8 pcs.)": "https://images.unsplash.com/photo-1567188040759-fb8a883dc6d8?w=500&auto=format&fit=crop&q=80",
-    "paneer garlic kabab (8 pcs.)": "https://images.unsplash.com/photo-1567188040759-fb8a883dc6d8?w=500&auto=format&fit=crop&q=80",
-    "harayali paneer (8 pcs.)": "https://images.unsplash.com/photo-1565557623262-b51c2513a641?w=500&auto=format&fit=crop&q=80",
-    "paneer chatpat kabab (8 pcs.)": "https://images.unsplash.com/photo-1567188040759-fb8a883dc6d8?w=500&auto=format&fit=crop&q=80",
+      // Rotis & Naan
+      "tandoori roti": "https://images.unsplash.com/photo-1506280754576-f6fa8a873550?w=500&auto=format&fit=crop&q=80",
+      "butter roti": "https://images.unsplash.com/photo-1506280754576-f6fa8a873550?w=500&auto=format&fit=crop&q=80",
+      "plain naan": "https://images.unsplash.com/photo-1533473359331-0135ef1b58bf?w=500&auto=format&fit=crop&q=80",
+      "butter naan": "https://images.unsplash.com/photo-1533473359331-0135ef1b58bf?w=500&auto=format&fit=crop&q=80",
+      "plain kulcha": "https://images.unsplash.com/photo-1533473359331-0135ef1b58bf?w=500&auto=format&fit=crop&q=80",
+      "butter kulcha": "https://images.unsplash.com/photo-1533473359331-0135ef1b58bf?w=500&auto=format&fit=crop&q=80",
+      "masala kulcha": "https://images.unsplash.com/photo-1506280754576-f6fa8a873550?w=500&auto=format&fit=crop&q=80",
+      "stuffed kulcha": "https://images.unsplash.com/photo-1506280754576-f6fa8a873550?w=500&auto=format&fit=crop&q=80",
 
-    // Starters - Prawns
-    "prawns 65 (dry)": "https://images.unsplash.com/photo-1610057099443-fde8c4d50f91?w=500&auto=format&fit=crop&q=80",
-    "pepper prawns": "https://images.unsplash.com/photo-1559742811-822873691df8?w=500&auto=format&fit=crop&q=80",
-    "loose prawns (dry)": "https://images.unsplash.com/photo-1559742811-822873691df8?w=500&auto=format&fit=crop&q=80",
-    "ginger prawns (dry)": "https://images.unsplash.com/photo-1559742811-822873691df8?w=500&auto=format&fit=crop&q=80",
-    "golden fried prawns (dry)": "https://images.unsplash.com/photo-1562967914-608f82629710?w=500&auto=format&fit=crop&q=80",
-    "prawns roast (dry)": "https://images.unsplash.com/photo-1559742811-822873691df8?w=500&auto=format&fit=crop&q=80",
+      // Drinks
+      "water bottle": "https://images.unsplash.com/photo-1548839140-29a749e1bc4e?w=500&auto=format&fit=crop&q=80",
+      "cool drinks": "https://images.unsplash.com/photo-1581009146145-b5ef050c2e1e?w=500&auto=format&fit=crop&q=80",
+      "goli soda": "https://images.unsplash.com/photo-1551024709-8f23befc6f87?w=500&auto=format&fit=crop&q=80"
+    };
 
-    // Veg Curries
-    "tomato curry": "https://images.unsplash.com/photo-1546833999-b9f581a1996d?w=500&auto=format&fit=crop&q=80",
-    "dal fry": "https://images.unsplash.com/photo-1546833999-b9f581a1996d?w=500&auto=format&fit=crop&q=80",
-    "dal tadka": "https://images.unsplash.com/photo-1546833999-b9f581a1996d?w=500&auto=format&fit=crop&q=80",
-    "capsicum curry": "https://images.unsplash.com/photo-1596797038530-2c107229654b?w=500&auto=format&fit=crop&q=80",
-    "veg. kolapuri": "https://images.unsplash.com/photo-1585937421612-70a008356fbe?w=500&auto=format&fit=crop&q=80",
-    "aloo mutter": "https://images.unsplash.com/photo-1585937421612-70a008356fbe?w=500&auto=format&fit=crop&q=80",
-    "aloo gobi": "https://images.unsplash.com/photo-1645177628172-a94c1f96e6db?w=500&auto=format&fit=crop&q=80",
-    "gobi mutter": "https://images.unsplash.com/photo-1645177628172-a94c1f96e6db?w=500&auto=format&fit=crop&q=80",
-    "veg kayamath": "https://images.unsplash.com/photo-1585937421612-70a008356fbe?w=500&auto=format&fit=crop&q=80",
-    "methi chaman": "https://images.unsplash.com/photo-1631452180519-c014fe946bc7?w=500&auto=format&fit=crop&q=80",
-    "paneer sai kurma": "https://images.unsplash.com/photo-1631452180519-c014fe946bc7?w=500&auto=format&fit=crop&q=80",
-    "veg. kofta": "https://images.unsplash.com/photo-1585937421612-70a008356fbe?w=500&auto=format&fit=crop&q=80",
-    "malai kofta": "https://images.unsplash.com/photo-1585937421612-70a008356fbe?w=500&auto=format&fit=crop&q=80",
-    "baby corn masala": "https://images.unsplash.com/photo-1585937421612-70a008356fbe?w=500&auto=format&fit=crop&q=80",
-    "mix veg curry": "https://images.unsplash.com/photo-1585937421612-70a008356fbe?w=500&auto=format&fit=crop&q=80",
-    "veg. patiyala": "https://images.unsplash.com/photo-1585937421612-70a008356fbe?w=500&auto=format&fit=crop&q=80",
-    "kadai veg": "https://images.unsplash.com/photo-1585937421612-70a008356fbe?w=500&auto=format&fit=crop&q=80",
-    "aloo palak": "https://images.unsplash.com/photo-1546833999-b9f581a1996d?w=500&auto=format&fit=crop&q=80",
-    "plain palak": "https://images.unsplash.com/photo-1546833999-b9f581a1996d?w=500&auto=format&fit=crop&q=80",
-    "palak paneer": "https://images.unsplash.com/photo-1631452180519-c014fe946bc7?w=500&auto=format&fit=crop&q=80",
-    "kadai paneer": "https://images.unsplash.com/photo-1631452180519-c014fe946bc7?w=500&auto=format&fit=crop&q=80",
-    "mushroom masala": "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=500&auto=format&fit=crop&q=80",
-    "mushroom curry / fry": "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=500&auto=format&fit=crop&q=80",
-    "paneer butter masala": "https://images.unsplash.com/photo-1631452180519-c014fe946bc7?w=500&auto=format&fit=crop&q=80",
-    "paneer mutter": "https://images.unsplash.com/photo-1631452180519-c014fe946bc7?w=500&auto=format&fit=crop&q=80",
-    "paneer mushroom curry": "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=500&auto=format&fit=crop&q=80",
-    "kaju paneer curry": "https://images.unsplash.com/photo-1567188040759-fb8a883dc6d8?w=500&auto=format&fit=crop&q=80",
-    "kaju curry": "https://images.unsplash.com/photo-1565557623262-b51c2513a641?w=500&auto=format&fit=crop&q=80",
-
-    // Rotis & Naan
-    "tandoori roti": "https://images.unsplash.com/photo-1506280754576-f6fa8a873550?w=500&auto=format&fit=crop&q=80",
-    "butter roti": "https://images.unsplash.com/photo-1506280754576-f6fa8a873550?w=500&auto=format&fit=crop&q=80",
-    "plain naan": "https://images.unsplash.com/photo-1533473359331-0135ef1b58bf?w=500&auto=format&fit=crop&q=80",
-    "butter naan": "https://images.unsplash.com/photo-1533473359331-0135ef1b58bf?w=500&auto=format&fit=crop&q=80",
-    "plain kulcha": "https://images.unsplash.com/photo-1533473359331-0135ef1b58bf?w=500&auto=format&fit=crop&q=80",
-    "butter kulcha": "https://images.unsplash.com/photo-1533473359331-0135ef1b58bf?w=500&auto=format&fit=crop&q=80",
-    "masala kulcha": "https://images.unsplash.com/photo-1506280754576-f6fa8a873550?w=500&auto=format&fit=crop&q=80",
-    "stuffed kulcha": "https://images.unsplash.com/photo-1506280754576-f6fa8a873550?w=500&auto=format&fit=crop&q=80",
-
-    // Drinks
-    "water bottle": "https://images.unsplash.com/photo-1548839140-29a749e1bc4e?w=500&auto=format&fit=crop&q=80",
-    "cool drinks": "https://images.unsplash.com/photo-1581009146145-b5ef050c2e1e?w=500&auto=format&fit=crop&q=80",
-    "goli soda": "https://images.unsplash.com/photo-1551024709-8f23befc6f87?w=500&auto=format&fit=crop&q=80"
-  };
-
-  function photoForDish(name) {
-    const key = String(name).trim().toLowerCase();
-    if (UNIQUE_DISH_IMAGES[key]) {
-      return UNIQUE_DISH_IMAGES[key];
+    function photoForDish(name) {
+      const cleanKey = String(name).trim().toLowerCase();
+      if (UNIQUE_DISH_IMAGES[cleanKey]) {
+        return UNIQUE_DISH_IMAGES[cleanKey];
+      }
+      for (const [key, url] of Object.entries(UNIQUE_DISH_IMAGES)) {
+        if (cleanKey.includes(key)) {
+          return url;
+        }
+      }
+      return "https://images.unsplash.com/photo-1563379091339-03b21ab4a4f8?w=500&auto=format&fit=crop&q=80";
     }
-    return "https://images.unsplash.com/photo-1563379091339-03b21ab4a4f8?w=500&auto=format&fit=crop&q=80";
-  }
 
-  const MENU = {
-    "Fried Rice": {
-      items: [
-        ["Curd Rice",80],["Spl. Curd Rice",100],["Veg Fried Rice",220],["Gobi Fried Rice",250],
-        ["Mushroom Fried Rice",260],["Paneer Fried Rice",260],["Paneer Mushroom Fried Rice",280],
-        ["Capsicum Fried Rice",200],["Kaju Fried Rice",300],["Kaju Paneer Fried Rice",320],
-        ["Jeera Fried Rice",220],["Veg Mixed Fried Rice",300],["Egg Fried Rice",230],
-        ["Spl. Egg Fried Rice",260],["Chicken Fried Rice",290],["Special Chicken Fried Rice",320],
-        ["Non-Veg Mixed Fried Rice",400],["Mutton Fried Rice",370],["Spl. Mutton Fried Rice",400],
-        ["Fish Fried Rice",320],["Prawns Fried Rice",370]
-      ]
-    },
-    "Special Biryani & Dry": {
-      note:"Served Afternoon 12:00–3:00 PM · Evening 6:30–10:00 PM",
-      items: [
-        ["Gongura Chicken Biryani",290],["Gongura Mutton Biryani",390],
-        ["Ulavacharu Chicken Biryani",310],["Ulavacharu Mutton Biryani",410],
-        ["Mutton Nalli Ghost Biryani",390]
-      ]
-    },
-    "Biryani (Basmathi / Local Rice)": {
-      note:"Served 11:30 AM–10:30 PM · Choice of Basmathi or Chitty Muthyalu rice, same price",
-      items: [
-        ["Biryani Rice",160],["Veg Biryani",210],["Paneer Biryani",250],["Kaju Biryani",310],
-        ["Mushroom Biryani",250],["Kaju & Paneer Biryani",290],["Egg Biryani",220],
-        ["Chicken Dum Biryani",270],["Chicken Leg Piece Biryani",280],["Special Chicken Biryani",310],
-        ["Chicken Lollipop Biryani",310],["Mutton Dum Biryani",390],["Keema Biryani",350],
-        ["Special Mutton Biryani",420],["Fish Biryani",360],["Prawns Biryani",410],
-        ["Natukodi Biryani",390],["Chicken Biryani Fry Pcs",260],["Mutton Biryani Fry Pcs",380],
-        ["Chicken Family Pack",610],["Chicken Leg Piece Family Pack",630],
-        ["Special Chicken Family Pack",660],["Mutton Family Pack",760],["Special Mutton Family Pack",810],
-        ["Chicken Biryani Couple Pack",380,"Takeaway only"],
-        ["Spl. Chicken Biryani Couple Pack",410,"Takeaway only"],
-        ["Mutton Biryani Couple Pack",470,"Takeaway only"],
-        ["Mini Jambo Pack Biryani",440],["Jambo Pack Biryani",810]
-      ]
-    },
-    "Kunda & Bongu Biryani": {
-      items: [
-        ["Veg Kunda Biryani","460 / 480 (P)"],["Veg Kunda Family Pack","590 / 620 (P)"],
-        ["Chicken Kunda Biryani","580 / 600 (P)"],["Chicken Kunda Family Pack","810 / 830 (P)"],
-        ["Mutton Kunda Biryani","690 / 710 (P)"],["Mutton Kunda Family Pack","960 / 980 (P)"],
-        ["Chicken Bongu Biryani","640 / 660 (P)"],["Spl Chicken Bongu Biryani","660 / 680 (P)"],
-        ["Mutton Bongu Biryani","760 / 780 (P)"],["Spl Mutton Bongu Biryani","800 / 820 (P)"]
-      ]
-    },
-    "Bucket Biryani": {
-      items: [
-        ["Bucket Chicken Biryani",1080],["Bucket Spl. Chicken Biryani",1170],
-        ["Bucket Mutton Biryani",1340],["Bucket Fish Biryani",1180],["Bucket Prawns Biryani",1280],
-        ["Mini Bucket Chicken Biryani",910],["Mini Bucket Spl. Chicken Biryani",950],
-        ["Mini Bucket Mutton Biryani",1170],["Mini Bucket Fish Biryani",980],["Mini Bucket Prawns Biryani",1100]
-      ]
-    },
-    "Starters & Dry Items": {
-      groups: [
-        { title:"Tandoori Non-Veg Starters", items:[
-          ["Tangadi Kabab (1 pc.)",90],["Tangadi Kabab (4 pcs.)",340],["Tandoori Chicken Half",280],
-          ["Tandoori Chicken Full",510],["Chicken Tikka (8 pcs.)",330],["Malai Tikka (8 pcs.)",340],
-          ["Zafrani Tikka (8 pcs.)",340],["Achari Tikka (8 pcs.)",340],["Hariyali Kabab (8 pcs.)",340]
-        ]},
-        { title:"Tandoori Veg Starters", items:[
-          ["Paneer Tikka (8 pcs.)",250],["Paneer Garlic Kabab (8 pcs.)",250],
-          ["Harayali Paneer (8 pcs.)",250],["Paneer Chatpat Kabab (8 pcs.)",250]
-        ]},
-        { title:"Prawns Dry Items", items:[
-          ["Prawns 65 (Dry)",390],["Pepper Prawns",390],["Loose Prawns (Dry)",390],
-          ["Ginger Prawns (Dry)",390],["Golden Fried Prawns (Dry)",390],["Prawns Roast (Dry)",390]
-        ]}
-      ]
-    },
-    "Veg Curries & Rotis": {
-      groups: [
-        { title:"Veg Curries", items:[
-          ["Tomato Curry",170],["Dal Fry",180],["Dal Tadka",200],["Capsicum Curry",200],
-          ["Veg. Kolapuri",220],["Aloo Mutter",220],["Aloo Gobi",220],["Gobi Mutter",220],
-          ["Veg Kayamath",240],["Methi Chaman",240],["Paneer Sai Kurma",240],["Veg. Kofta",240],
-          ["Malai Kofta",240],["Baby Corn Masala",240],["Mix Veg Curry",240],["Veg. Patiyala",240],
-          ["Kadai Veg",240],["Aloo Palak",240],["Plain Palak",240],["Palak Paneer",260],
-          ["Kadai Paneer",240],["Mushroom Masala",250],["Mushroom Curry / Fry",250],
-          ["Paneer Butter Masala",250],["Paneer Mutter",250],["Paneer Mushroom Curry",260],
-          ["Kaju Paneer Curry",290],["Kaju Curry",320]
-        ]},
-        { title:"Rotis & Naan", items:[
-          ["Tandoori Roti",25],["Butter Roti",30],["Plain Naan",35],["Butter Naan",40],
-          ["Plain Kulcha",40],["Butter Kulcha",45],["Masala Kulcha",50],["Stuffed Kulcha",55]
-        ]}
-      ]
-    },
-    "Drinks": {
-      items: [["Water Bottle",20],["Cool Drinks",20],["Goli Soda",30]]
-    }
-  };
+    const MENU = {
+      "Fried Rice": {
+        items: [
+          ["Curd Rice",80],["Spl. Curd Rice",100],["Veg Fried Rice",220],["Gobi Fried Rice",250],
+          ["Mushroom Fried Rice",260],["Paneer Fried Rice",260],["Paneer Mushroom Fried Rice",280],
+          ["Capsicum Fried Rice",200],["Kaju Fried Rice",300],["Kaju Paneer Fried Rice",320],
+          ["Jeera Fried Rice",220],["Veg Mixed Fried Rice",300],["Egg Fried Rice",230],
+          ["Spl. Egg Fried Rice",260],["Chicken Fried Rice",290],["Special Chicken Fried Rice",320],
+          ["Non-Veg Mixed Fried Rice",400],["Mutton Fried Rice",370],["Spl. Mutton Fried Rice",400],
+          ["Fish Fried Rice",320],["Prawns Fried Rice",370]
+        ]
+      },
+      "Special Biryani & Dry": {
+        note:"Served Afternoon 12:00–3:00 PM · Evening 6:30–10:00 PM",
+        items: [
+          ["Gongura Chicken Biryani",290],["Gongura Mutton Biryani",390],
+          ["Ulavacharu Chicken Biryani",310],["Ulavacharu Mutton Biryani",410],
+          ["Mutton Nalli Ghost Biryani",390]
+        ]
+      },
+      "Biryani (Basmathi / Local Rice)": {
+        note:"Served 11:30 AM–10:30 PM · Choice of Basmathi or Chitty Muthyalu rice, same price",
+        items: [
+          ["Biryani Rice",160],["Veg Biryani",210],["Paneer Biryani",250],["Kaju Biryani",310],
+          ["Mushroom Biryani",250],["Kaju & Paneer Biryani",290],["Egg Biryani",220],
+          ["Chicken Dum Biryani",270],["Chicken Leg Piece Biryani",280],["Special Chicken Biryani",310],
+          ["Chicken Lollipop Biryani",310],["Mutton Dum Biryani",390],["Keema Biryani",350],
+          ["Special Mutton Biryani",420],["Fish Biryani",360],["Prawns Biryani",410],
+          ["Natukodi Biryani",390],["Chicken Biryani Fry Pcs",260],["Mutton Biryani Fry Pcs",380],
+          ["Chicken Family Pack",610],["Chicken Leg Piece Family Pack",630],
+          ["Special Chicken Family Pack",660],["Mutton Family Pack",760],["Special Mutton Family Pack",810],
+          ["Chicken Biryani Couple Pack",380,"Takeaway only"],
+          ["Spl. Chicken Biryani Couple Pack",410,"Takeaway only"],
+          ["Mutton Biryani Couple Pack",470,"Takeaway only"],
+          ["Mini Jambo Pack Biryani",440],["Jambo Pack Biryani",810]
+        ]
+      },
+      "Kunda & Bongu Biryani": {
+        items: [
+          ["Veg Kunda Biryani","460 / 480 (P)"],["Veg Kunda Family Pack","590 / 620 (P)"],
+          ["Chicken Kunda Biryani","580 / 600 (P)"],["Chicken Kunda Family Pack","810 / 830 (P)"],
+          ["Mutton Kunda Biryani","690 / 710 (P)"],["Mutton Kunda Family Pack","960 / 980 (P)"],
+          ["Chicken Bongu Biryani","640 / 660 (P)"],["Spl Chicken Bongu Biryani","660 / 680 (P)"],
+          ["Mutton Bongu Biryani","760 / 780 (P)"],["Spl Mutton Bongu Biryani","800 / 820 (P)"]
+        ]
+      },
+      "Bucket Biryani": {
+        items: [
+          ["Bucket Chicken Biryani",1080],["Bucket Spl. Chicken Biryani",1170],
+          ["Bucket Mutton Biryani",1340],["Bucket Fish Biryani",1180],["Bucket Prawns Biryani",1280],
+          ["Mini Bucket Chicken Biryani",910],["Mini Bucket Spl. Chicken Biryani",950],
+          ["Mini Bucket Mutton Biryani",1170],["Mini Bucket Fish Biryani",980],["Mini Bucket Prawns Biryani",1100]
+        ]
+      },
+      "Starters & Dry Items": {
+        groups: [
+          { title:"Tandoori Non-Veg Starters", items:[
+            ["Tangadi Kabab (1 pc.)",90],["Tangadi Kabab (4 pcs.)",340],["Tandoori Chicken Half",280],
+            ["Tandoori Chicken Full",510],["Chicken Tikka (8 pcs.)",330],["Malai Tikka (8 pcs.)",340],
+            ["Zafrani Tikka (8 pcs.)",340],["Achari Tikka (8 pcs.)",340],["Hariyali Kabab (8 pcs.)",340]
+          ]},
+          { title:"Tandoori Veg Starters", items:[
+            ["Paneer Tikka (8 pcs.)",250],["Paneer Garlic Kabab (8 pcs.)",250],
+            ["Harayali Paneer (8 pcs.)",250],["Paneer Chatpat Kabab (8 pcs.)",250]
+          ]},
+          { title:"Prawns Dry Items", items:[
+            ["Prawns 65 (Dry)",390],["Pepper Prawns",390],["Loose Prawns (Dry)",390],
+            ["Ginger Prawns (Dry)",390],["Golden Fried Prawns (Dry)",390],["Prawns Roast (Dry)",390]
+          ]}
+        ]
+      },
+      "Veg Curries & Rotis": {
+        groups: [
+          { title:"Veg Curries", items:[
+            ["Tomato Curry",170],["Dal Fry",180],["Dal Tadka",200],["Capsicum Curry",200],
+            ["Veg. Kolapuri",220],["Aloo Mutter",220],["Aloo Gobi",220],["Gobi Mutter",220],
+            ["Veg Kayamath",240],["Methi Chaman",240],["Paneer Sai Kurma",240],["Veg. Kofta",240],
+            ["Malai Kofta",240],["Baby Corn Masala",240],["Mix Veg Curry",240],["Veg. Patiyala",240],
+            ["Kadai Veg",240],["Aloo Palak",240],["Plain Palak",240],["Palak Paneer",260],
+            ["Kadai Paneer",240],["Mushroom Masala",250],["Mushroom Curry / Fry",250],
+            ["Paneer Butter Masala",250],["Paneer Mutter",250],["Paneer Mushroom Curry",260],
+            ["Kaju Paneer Curry",290],["Kaju Curry",320]
+          ]},
+          { title:"Rotis & Naan", items:[
+            ["Tandoori Roti",25],["Butter Roti",30],["Plain Naan",35],["Butter Naan",40],
+            ["Plain Kulcha",40],["Butter Kulcha",45],["Masala Kulcha",50],["Stuffed Kulcha",55]
+          ]}
+        ]
+      },
+      "Drinks": {
+        items: [["Water Bottle",20],["Cool Drinks",20],["Goli Soda",30]]
+      }
+    };[cite: 16]
 
-  function classify(name){
-    const n = String(name).toLowerCase();
-    if(/chicken|mutton|fish|prawn|natukodi|keema|kabab|kebab|tikka|ghost|gosht/.test(n)) return "nonveg";
-    if(/egg/.test(n)) return "egg";
-    return "veg";
-  }
+    function classify(name){
+      const n = String(name).toLowerCase();
+      if(/chicken|mutton|fish|prawn|natukodi|keema|kabab|kebab|tikka|ghost|gosht/.test(n)) return "nonveg";
+      if(/egg/.test(n)) return "egg";
+      return "veg";
+    }[cite: 16]
 
-  let itemIndex = 0;
-  const itemsByIndex = {};
-  const cart = {};
+    let itemIndex = 0;
+    const itemsByIndex = {};
+    const cart = {};
 
-  function controlInner(idx){
-    const c = cart[idx];
-    if(c && c.qty > 0){
-      return `<div class="stepper">
-        <button onclick="changeQty(${idx},-1,event)" aria-label="Remove one">−</button>
-        <span>${c.qty}</span>
-        <button onclick="changeQty(${idx},1,event)" aria-label="Add one">+</button>
-      </div>`;
-    }
-    return `<button class="add-btn" onclick="changeQty(${idx},1,event)">ADD</button>`;
-  }
+    function controlInner(idx){
+      const c = cart[idx];
+      if(c && c.qty > 0){
+        return `<div class="stepper">
+          <button onclick="changeQty(${idx},-1,event)" aria-label="Remove one">−</button>
+          <span>${c.qty}</span>
+          <button onclick="changeQty(${idx},1,event)" aria-label="Add one">+</button>
+        </div>`;
+      }
+      return `<button class="add-btn" onclick="changeQty(${idx},1,event)">ADD</button>`;
+    }[cite: 16]
 
-  function dishCard([name, price, sub]){
-    const cls = classify(name);
-    const priceHtml = typeof price === "number" ? "₹" + price : price;
-    const idx = itemIndex++;
-    itemsByIndex[idx] = {name,price};
+    function dishCard([name, price, sub]){
+      const cls = classify(name);
+      const priceHtml = typeof price === "number" ? "₹" + price : price;
+      const idx = itemIndex++;
+      itemsByIndex[idx] = {name,price};
 
-    const photo = photoForDish(name);
-    const fallback = RESTAURANT_PHOTOS.food[0];
+      const photo = photoForDish(name);
 
-    const controlHtml = typeof price === "number"
-      ? `<div class="control" id="ctrl-${idx}">${controlInner(idx)}</div>`
-      : `<div class="control call-only">Call to order</div>`;
+      const controlHtml = typeof price === "number"
+        ? `<div class="control" id="ctrl-${idx}">${controlInner(idx)}</div>`
+        : `<div class="control call-only">Call to order</div>`;[cite: 16]
 
-    return `<div class="dish-card reveal" style="transition-delay:${(idx%6)*0.06}s;" data-idx="${idx}">
-      <div class="dish-photo-wrap">
-        <img class="dish-photo"
-             src="${photo}"
-             alt="${name}"
-             loading="lazy"
-             onerror="this.onerror=null;this.src='https://images.unsplash.com/photo-1563379091339-03b21ab4a4f8?w=500&auto=format&fit=crop&q=80';">
-      </div>
-      <div class="dish-main">
-        <div class="dish-info">
-          <div class="dish-name"><span class="dot ${cls}"></span>${name}</div>
-          <div class="dish-price">${priceHtml}</div>
-          ${sub ? `<div class="dish-sub">${sub}</div>` : ""}
+      return `<div class="dish-card reveal" style="transition-delay:${(idx%6)*0.06}s;" data-idx="${idx}">
+        <div class="dish-photo-wrap">
+          <img class="dish-photo"
+               src="${photo}"
+               alt="${name}"
+               loading="lazy"
+               onerror="this.onerror=null;this.src='https://images.unsplash.com/photo-1563379091339-03b21ab4a4f8?w=500&auto=format&fit=crop&q=80';">
         </div>
-        ${controlHtml}
-      </div>
-    </div>`;
-  }
-
-  const reduceMotion = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-
-  function flyToCart(sourceEl){
-    if(reduceMotion || !sourceEl) return;
-    const target = document.getElementById("navCart");
-    if(!target) return;
-    const imgEl = sourceEl.closest(".dish-card")?.querySelector(".dish-photo");
-    const startRect = (imgEl || sourceEl).getBoundingClientRect();
-    const endRect = target.getBoundingClientRect();
-
-    const ghost = imgEl ? imgEl.cloneNode(true) : document.createElement("div");
-    ghost.className = "fly-ghost";
-    ghost.style.left = startRect.left + "px";
-    ghost.style.top = startRect.top + "px";
-    ghost.style.width = startRect.width + "px";
-    ghost.style.height = startRect.height + "px";
-    if(!imgEl) ghost.style.background = "var(--chili)";
-    document.body.appendChild(ghost);
-
-    requestanimationFrame(()=>{
-      ghost.style.left = (endRect.left + endRect.width/2 - 8) + "px";
-      ghost.style.top = (endRect.top + endRect.height/2 - 8) + "px";
-      ghost.style.width = "16px";
-      ghost.style.height = "16px";
-      ghost.style.opacity = "0.2";
-    });
-    window.setTimeout(()=>ghost.remove(), 650);
-  }
-
-  function changeQty(idx, delta, evt){
-    const item = itemsByIndex[idx];
-    if(!item) return;
-    if(!cart[idx]) cart[idx] = {name:item.name, price:item.price, qty:0};
-    cart[idx].qty += delta;
-    if(cart[idx].qty <= 0) delete cart[idx];
-
-    if(delta > 0 && evt && evt.target){
-      const btn = evt.target.closest("button");
-      if(btn){
-        btn.classList.remove("pulse"); void btn.offsetWidth; btn.classList.add("pulse");
-        window.setTimeout(()=>btn.classList.remove("pulse"), 420);
-      }
-      flyToCart(evt.target);
-      const navCart = document.getElementById("navCart");
-      if(navCart){
-        navCart.classList.remove("bump"); void navCart.offsetWidth; navCart.classList.add("bump");
-        window.setTimeout(()=>navCart.classList.remove("bump"), 460);
-      }
+        <div class="dish-main">
+          <div class="dish-info">
+            <div class="dish-name"><span class="dot ${cls}"></span>${name}</div>
+            <div class="dish-price">${priceHtml}</div>
+            ${sub ? `<div class="dish-sub">${sub}</div>` : ""}
+          </div>
+          ${controlHtml}
+        </div>
+      </div>`;[cite: 16]
     }
 
-    const ctrlEl = document.getElementById(`ctrl-${idx}`);
-    if(ctrlEl) ctrlEl.innerHTML = controlInner(idx);
-    renderCartSummary();
-  }
+    const reduceMotion = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;[cite: 16]
 
-  function renderCartSummary(){
-    const entries = Object.values(cart);
-    const totalQty = entries.reduce((s,e)=>s+e.qty,0);
-    const totalPrice = entries.reduce((s,e)=>s+e.qty*e.price,0);
+    function flyToCart(sourceEl){
+      if(reduceMotion || !sourceEl) return;
+      const target = document.getElementById("navCart");
+      if(!target) return;
+      const imgEl = sourceEl.closest(".dish-card")?.querySelector(".dish-photo");
+      const startRect = (imgEl || sourceEl).getBoundingClientRect();
+      const endRect = target.getBoundingClientRect();
 
-    const bar = document.getElementById("cartBar");
-    if(totalQty > 0) bar.classList.add("show");
-    else {
-      bar.classList.remove("show");
-      closeDrawer();
+      const ghost = imgEl ? imgEl.cloneNode(true) : document.createElement("div");
+      ghost.className = "fly-ghost";
+      ghost.style.left = startRect.left + "px";
+      ghost.style.top = startRect.top + "px";
+      ghost.style.width = startRect.width + "px";
+      ghost.style.height = startRect.height + "px";
+      if(!imgEl) ghost.style.background = "var(--chili)";
+      document.body.appendChild(ghost);
+
+      requestAnimationFrame(()=>{
+        ghost.style.left = (endRect.left + endRect.width/2 - 8) + "px";
+        ghost.style.top = (endRect.top + endRect.height/2 - 8) + "px";
+        ghost.style.width = "16px";
+        ghost.style.height = "16px";
+        ghost.style.opacity = "0.2";
+      });
+      window.setTimeout(()=>ghost.remove(), 650);
     }
 
-    document.getElementById("cartCount").textContent = totalQty + (totalQty === 1 ? " item" : " items");
-    const navBadge = document.getElementById("navCartBadge");
-    if(navBadge) navBadge.textContent = totalQty;
-    document.getElementById("cartTotal").textContent = "₹" + totalPrice;
-    document.getElementById("drawerTotal").textContent = "₹" + totalPrice;
-    document.getElementById("deliveryTotal").textContent = "₹" + (totalQty ? DELIVERY_CHARGE : 0);
-    document.getElementById("grandTotal").textContent = "₹" + (totalPrice + (totalQty ? DELIVERY_CHARGE : 0));
+    function changeQty(idx, delta, evt){
+      const item = itemsByIndex[idx];
+      if(!item) return;
+      if(!cart[idx]) cart[idx] = {name:item.name, price:item.price, qty:0};
+      cart[idx].qty += delta;
+      if(cart[idx].qty <= 0) delete cart[idx];
 
-    const body = document.getElementById("cartBody");
-    if(!entries.length){
-      body.innerHTML = `<div class="empty-cart">Your cart is empty</div>`;
-    } else {
-      body.innerHTML = entries.map(e =>
-        `<div class="cart-row"><span>${e.name} × ${e.qty}</span><span>₹${e.qty*e.price}</span></div>`
+      if(delta > 0 && evt && evt.target){
+        const btn = evt.target.closest("button");
+        if(btn){
+          btn.classList.remove("pulse"); void btn.offsetWidth; btn.classList.add("pulse");
+          window.setTimeout(()=>btn.classList.remove("pulse"), 420);
+        }
+        flyToCart(evt.target);
+        const navCart = document.getElementById("navCart");
+        if(navCart){
+          navCart.classList.remove("bump"); void navCart.offsetWidth; navCart.classList.add("bump");
+          window.setTimeout(()=>navCart.classList.remove("bump"), 460);
+        }
+      }
+
+      const ctrlEl = document.getElementById(`ctrl-${idx}`);
+      if(ctrlEl) ctrlEl.innerHTML = controlInner(idx);
+      renderCartSummary();
+    }[cite: 16]
+
+    function renderCartSummary(){
+      const entries = Object.values(cart);
+      const totalQty = entries.reduce((s,e)=>s+e.qty,0);
+      const totalPrice = entries.reduce((s,e)=>s+e.qty*e.price,0);
+
+      const bar = document.getElementById("cartBar");
+      if(totalQty > 0) bar.classList.add("show");
+      else {
+        bar.classList.remove("show");
+        closeDrawer();
+      }
+
+      document.getElementById("cartCount").textContent = totalQty + (totalQty === 1 ? " item" : " items");
+      const navBadge = document.getElementById("navCartBadge");
+      if(navBadge) navBadge.textContent = totalQty;
+      document.getElementById("cartTotal").textContent = "₹" + totalPrice;
+      document.getElementById("drawerTotal").textContent = "₹" + totalPrice;
+      document.getElementById("deliveryTotal").textContent = "₹" + (totalQty ? DELIVERY_CHARGE : 0);
+      document.getElementById("grandTotal").textContent = "₹" + (totalPrice + (totalQty ? DELIVERY_CHARGE : 0));
+
+      const body = document.getElementById("cartBody");
+      if(!entries.length){
+        body.innerHTML = `<div class="empty-cart">Your cart is empty</div>`;
+      } else {
+        body.innerHTML = entries.map(e =>
+          `<div class="cart-row"><span>${e.name} × ${e.qty}</span><span>₹${e.qty*e.price}</span></div>`
+        ).join("");
+      }
+    }[cite: 16]
+
+    function openDrawer(){
+      document.getElementById("cartDrawer").classList.add("open");
+      document.getElementById("cartOverlay").classList.add("show");
+    }[cite: 16]
+
+    function closeDrawer(){
+      document.getElementById("cartDrawer").classList.remove("open");
+      document.getElementById("cartOverlay").classList.remove("show");
+    }[cite: 16]
+
+    let customerDetails = null;
+
+    function getCartTotals(){
+      const entries = Object.values(cart);
+      const subtotal = entries.reduce((s,e)=>s+e.qty*e.price,0);
+      const type = document.querySelector('input[name="orderType"]:checked')?.value || "delivery";
+      const delivery = type === "delivery" && subtotal > 0 ? DELIVERY_CHARGE : 0;
+      return {entries,subtotal,delivery,total:subtotal+delivery};
+    }[cite: 16]
+
+    function updateCheckoutType(){
+      const type = document.querySelector('input[name="orderType"]:checked')?.value || "delivery";
+      const addressWrap = document.getElementById("addressWrap");
+      const tableWrap = document.getElementById("tableWrap");
+      const address = document.getElementById("customerAddress");
+
+      if(addressWrap) addressWrap.classList.toggle("hidden", type !== "delivery");
+      if(tableWrap) tableWrap.classList.toggle("hidden", type !== "pickup");
+      if(address) address.required = type === "delivery";
+
+      const cod = document.querySelector('input[name="paymentMethod"][value="cod"]');
+      const pickup = document.querySelector('input[name="paymentMethod"][value="pickup"]');
+
+      if(type === "pickup" && pickup) pickup.checked = true;
+      if(type === "delivery" && cod) cod.checked = true;
+
+      document.querySelectorAll(".choice").forEach(label=>{
+        const input = label.querySelector("input");
+        label.classList.toggle("active", !!input && input.checked);
+      });
+    }[cite: 16]
+
+    function openCheckout(){
+      if(!getCartTotals().entries.length) return;
+      customerDetails = null;
+      document.getElementById("checkoutTitle").textContent = "Customer Details";
+      document.getElementById("checkoutStep1").classList.remove("hidden");
+      document.getElementById("checkoutStep2").classList.add("hidden");
+      document.getElementById("checkoutOverlay").classList.add("show");
+      document.getElementById("formError").classList.remove("show");
+      document.getElementById("confirmError").classList.remove("show");
+      updateCheckoutType();
+    }[cite: 16]
+
+    function closeCheckout(){
+      document.getElementById("checkoutOverlay").classList.remove("show");
+    }[cite: 16]
+
+    function escapeHtml(value){
+      return String(value).replaceAll("&","&amp;").replaceAll("<","&lt;")
+        .replaceAll(">","&gt;").replaceAll('"',"&quot;").replaceAll("'","&#039;");
+    }[cite: 16]
+
+    function showFinalConfirmation(){
+      const t = getCartTotals();
+      document.getElementById("checkoutTitle").textContent = "Confirm Order";
+      document.getElementById("checkoutStep1").classList.add("hidden");
+      document.getElementById("checkoutStep2").classList.remove("hidden");
+
+      const paymentText = customerDetails.paymentMethod === "cod" ? "Cash on Delivery" : "Pay at Pickup";
+      document.getElementById("finalCustomerDetails").innerHTML = `
+        <div><b>Name:</b> ${escapeHtml(customerDetails.name)}</div>
+        <div style="margin-top:5px;"><b>Mobile:</b> ${escapeHtml(customerDetails.phone)}</div>
+        <div style="margin-top:5px;"><b>Order Type:</b> ${customerDetails.orderType === "delivery" ? "Delivery" : "Pickup"}</div>
+        <div style="margin-top:5px;"><b>Payment:</b> ${paymentText}</div>
+        ${
+          customerDetails.orderType === "delivery"
+            ? `<div style="margin-top:5px;"><b>Address:</b> ${escapeHtml(customerDetails.address)}</div>`
+            : `<div style="margin-top:5px;"><b>Pickup Note:</b> ${escapeHtml(customerDetails.table || "None")}</div>`
+        }
+      `;
+      document.getElementById("checkoutSummary").innerHTML = t.entries.map(e =>
+        `<div class="checkout-item"><span>${escapeHtml(e.name)} × ${e.qty}</span><b>₹${e.qty*e.price}</b></div>`
       ).join("");
+      document.getElementById("confirmSubtotal").textContent = "₹" + t.subtotal;
+      document.getElementById("confirmDelivery").textContent = "₹" + t.delivery;
+      document.getElementById("checkoutGrandTotal").textContent = "₹" + t.total;
+    }[cite: 16]
+
+    function backToDetails(){
+      document.getElementById("checkoutTitle").textContent = "Customer Details";
+      document.getElementById("checkoutStep2").classList.add("hidden");
+      document.getElementById("checkoutStep1").classList.remove("hidden");
+    }[cite: 16]
+
+    // Render the menu immediately
+    const toolbar = document.getElementById("menuToolbar");
+    const panelsEl = document.getElementById("menuPanels");
+    const catNames = Object.keys(MENU);
+
+    toolbar.innerHTML = catNames.map((name,i) =>
+      `<button class="cat-chip ${i===0 ? "active" : ""}" data-cat="${i}">${name}</button>`
+    ).join("");[cite: 16]
+
+    try {
+      panelsEl.innerHTML = catNames.map((name,i) => {
+        const cat = MENU[name];
+        let inner = "";
+        if(cat.note) inner += `<div class="cat-note">${cat.note}</div>`;
+        if(cat.items) inner += `<div class="dish-grid">${cat.items.map(dishCard).join("")}</div>`;
+        if(cat.groups){
+          inner += cat.groups.map(g => `
+            <div class="subheading">${g.title}</div>
+            <div class="dish-grid">${g.items.map(dishCard).join("")}</div>
+          `).join("");
+        }
+        return `<div class="cat-panel ${i===0 ? "active" : ""}" data-cat="${i}">${inner}</div>`;
+      }).join("");[cite: 16]
+    } catch(err) {
+      console.error("Menu rendering error:", err);[cite: 16]
     }
-  }
 
-  function openDrawer(){
-    document.getElementById("cartDrawer").classList.add("open");
-    document.getElementById("cartOverlay").classList.add("show");
-  }
-
-  function closeDrawer(){
-    document.getElementById("cartDrawer").classList.remove("open");
-    document.getElementById("cartOverlay").classList.remove("show");
-  }
-
-  let customerDetails = null;
-
-  function getCartTotals(){
-    const entries = Object.values(cart);
-    const subtotal = entries.reduce((s,e)=>s+e.qty*e.price,0);
-    const type = document.querySelector('input[name="orderType"]:checked')?.value || "delivery";
-    const delivery = type === "delivery" && subtotal > 0 ? DELIVERY_CHARGE : 0;
-    return {entries,subtotal,delivery,total:subtotal+delivery};
-  }
-
-  function updateCheckoutType(){
-    const type = document.querySelector('input[name="orderType"]:checked')?.value || "delivery";
-    const addressWrap = document.getElementById("addressWrap");
-    const tableWrap = document.getElementById("tableWrap");
-    const address = document.getElementById("customerAddress");
-
-    if(addressWrap) addressWrap.classList.toggle("hidden", type !== "delivery");
-    if(tableWrap) tableWrap.classList.toggle("hidden", type !== "pickup");
-    if(address) address.required = type === "delivery";
-
-    const cod = document.querySelector('input[name="paymentMethod"][value="cod"]');
-    const pickup = document.querySelector('input[name="paymentMethod"][value="pickup"]');
-
-    if(type === "pickup" && pickup) pickup.checked = true;
-    if(type === "delivery" && cod) cod.checked = true;
-
-    document.querySelectorAll(".choice").forEach(label=>{
-      const input = label.querySelector("input");
-      label.classList.toggle("active", !!input && input.checked);
-    });
-  }
-
-  function openCheckout(){
-    if(!getCartTotals().entries.length) return;
-    customerDetails = null;
-    document.getElementById("checkoutTitle").textContent = "Customer Details";
-    document.getElementById("checkoutStep1").classList.remove("hidden");
-    document.getElementById("checkoutStep2").classList.add("hidden");
-    document.getElementById("checkoutOverlay").classList.add("show");
-    document.getElementById("formError").classList.remove("show");
-    document.getElementById("confirmError").classList.remove("show");
-    updateCheckoutType();
-  }
-
-  function closeCheckout(){
-    document.getElementById("checkoutOverlay").classList.remove("show");
-  }
-
-  function escapeHtml(value){
-    return String(value).replaceAll("&","&amp;").replaceAll("<","&lt;")
-      .replaceAll(">","&gt;").replaceAll('"',"&quot;").replaceAll("'","&#039;");
-  }
-
-  function showFinalConfirmation(){
-    const t = getCartTotals();
-    document.getElementById("checkoutTitle").textContent = "Confirm Order";
-    document.getElementById("checkoutStep1").classList.add("hidden");
-    document.getElementById("checkoutStep2").classList.remove("hidden");
-
-    const paymentText = customerDetails.paymentMethod === "cod" ? "Cash on Delivery" : "Pay at Pickup";
-    document.getElementById("finalCustomerDetails").innerHTML = `
-      <div><b>Name:</b> ${escapeHtml(customerDetails.name)}</div>
-      <div style="margin-top:5px;"><b>Mobile:</b> ${escapeHtml(customerDetails.phone)}</div>
-      <div style="margin-top:5px;"><b>Order Type:</b> ${customerDetails.orderType === "delivery" ? "Delivery" : "Pickup"}</div>
-      <div style="margin-top:5px;"><b>Payment:</b> ${paymentText}</div>
-      ${
-        customerDetails.orderType === "delivery"
-          ? `<div style="margin-top:5px;"><b>Address:</b> ${escapeHtml(customerDetails.address)}</div>`
-          : `<div style="margin-top:5px;"><b>Pickup Note:</b> ${escapeHtml(customerDetails.table || "None")}</div>`
-      }
-    `;
-    document.getElementById("checkoutSummary").innerHTML = t.entries.map(e =>
-      `<div class="checkout-item"><span>${escapeHtml(e.name)} × ${e.qty}</span><b>₹${e.qty*e.price}</b></div>`
-    ).join("");
-    document.getElementById("confirmSubtotal").textContent = "₹" + t.subtotal;
-    document.getElementById("confirmDelivery").textContent = "₹" + t.delivery;
-    document.getElementById("checkoutGrandTotal").textContent = "₹" + t.total;
-  }
-
-  function backToDetails(){
-    document.getElementById("checkoutTitle").textContent = "Customer Details";
-    document.getElementById("checkoutStep2").classList.add("hidden");
-    document.getElementById("checkoutStep1").classList.remove("hidden");
-  }
-
-  // Render the menu immediately. A second text-only fallback is included so
-  // image/network failures can never make the menu disappear.
-  const toolbar = document.getElementById("menuToolbar");
-  const panelsEl = document.getElementById("menuPanels");
-  const catNames = Object.keys(MENU);
-
-  toolbar.innerHTML = catNames.map((name,i) =>
-    `<button class="cat-chip ${i===0 ? "active" : ""}" data-cat="${i}">${name}</button>`
-  ).join("");
-
-  try {
-    panelsEl.innerHTML = catNames.map((name,i) => {
-      const cat = MENU[name];
-      let inner = "";
-      if(cat.note) inner += `<div class="cat-note">${cat.note}</div>`;
-      if(cat.items) inner += `<div class="dish-grid">${cat.items.map(dishCard).join("")}</div>`;
-      if(cat.groups){
-        inner += cat.groups.map(g => `
-          <div class="subheading">${g.title}</div>
-          <div class="dish-grid">${g.items.map(dishCard).join("")}</div>
-        `).join("");
-      }
-      return `<div class="cat-panel ${i===0 ? "active" : ""}" data-cat="${i}">${inner}</div>`;
-    }).join("");
-  } catch(err) {
-    console.error("Menu rendering error:", err);
-    panelsEl.innerHTML = catNames.map((name,i) => {
-      const cat = MENU[name];
-      const allItems = [];
-      if(cat.items) allItems.push(...cat.items);
-      if(cat.groups) cat.groups.forEach(g=>allItems.push(...g.items));
-      return `<div class="cat-panel ${i===0 ? "active" : ""}" data-cat="${i}">
-        ${cat.note ? `<div class="cat-note">${cat.note}</div>` : ""}
-        <div class="dish-grid">${allItems.map(([n,p,sub])=>`
-          <div class="dish-card">
-            <div class="dish-info">
-              <div class="dish-name"><span class="dot ${classify(n)}"></span>${n}</div>
-              <div class="dish-price">${typeof p === "number" ? "₹"+p : p}</div>
-              ${sub ? `<div class="dish-sub">${sub}</div>` : ""}
-            </div>
-          </div>`).join("")}
-        </div>
-      </div>`;
-    }).join("");
-  }
-
-  toolbar.addEventListener("click", e=>{
-    const btn = e.target.closest(".cat-chip");
-    if(!btn) return;
-    document.querySelectorAll(".cat-chip").forEach(b=>b.classList.remove("active"));
-    document.querySelectorAll(".cat-panel").forEach(p=>{p.classList.remove("active");p.classList.remove("in");});
-    btn.classList.add("active");
-    const panel = document.querySelector(`.cat-panel[data-cat="${btn.dataset.cat}"]`);
-    if(panel){
-      panel.classList.add("active");
-      requestanimationFrame(()=>panel.classList.add("in"));
-      panel.querySelectorAll(".dish-card").forEach(el=>revealObserver.observe(el));
-    }
-  });
-
-  document.querySelectorAll(".maintab").forEach(btn=>{
-    btn.addEventListener("click", ()=>{
-      document.querySelectorAll(".maintab").forEach(b=>b.classList.remove("active"));
-      document.querySelectorAll(".maintab-panel").forEach(p=>{p.classList.remove("active");p.classList.remove("in");});
+    toolbar.addEventListener("click", e=>{
+      const btn = e.target.closest(".cat-chip");
+      if(!btn) return;
+      document.querySelectorAll(".cat-chip").forEach(b=>b.classList.remove("active"));
+      document.querySelectorAll(".cat-panel").forEach(p=>{p.classList.remove("active");p.classList.remove("in");});
       btn.classList.add("active");
-      const panel = document.getElementById(btn.dataset.maintab);
+      const panel = document.querySelector(`.cat-panel[data-cat="${btn.dataset.cat}"]`);
       if(panel){
         panel.classList.add("active");
-        requestanimationFrame(()=>panel.classList.add("in"));
-        panel.querySelectorAll(".reveal").forEach(el=>revealObserver.observe(el));
+        requestAnimationFrame(()=>panel.classList.add("in"));
+        panel.querySelectorAll(".dish-card").forEach(el=>revealObserver.observe(el));
       }
-      window.scrollTo({top:0,behavior:"smooth"});
     });
-  });
 
-  const jumpToMenu = document.querySelector('[data-jump="menu"]');
-  if(jumpToMenu){
-    jumpToMenu.addEventListener("click", e=>{
+    document.querySelectorAll(".maintab").forEach(btn=>{
+      btn.addEventListener("click", ()=>{
+        document.querySelectorAll(".maintab").forEach(b=>b.classList.remove("active"));
+        document.querySelectorAll(".maintab-panel").forEach(p=>{p.classList.remove("active");p.classList.remove("in");});
+        btn.classList.add("active");
+        const panel = document.getElementById(btn.dataset.maintab);
+        if(panel){
+          panel.classList.add("active");
+          requestAnimationFrame(()=>panel.classList.add("in"));
+          panel.querySelectorAll(".reveal").forEach(el=>revealObserver.observe(el));
+        }
+        window.scrollTo({top:0,behavior:"smooth"});
+      });
+    });
+
+    const jumpToMenu = document.querySelector('[data-jump="menu"]');
+    if(jumpToMenu){
+      jumpToMenu.addEventListener("click", e=>{
+        e.preventDefault();
+        document.querySelector('.maintab[data-maintab="menu"]')?.click();
+      });
+    }[cite: 16]
+
+    document.getElementById("checkoutBtn").addEventListener("click", openCheckout);[cite: 16]
+    document.querySelectorAll('input[name="orderType"], input[name="paymentMethod"]').forEach(input=>{
+      input.addEventListener("change", updateCheckoutType);
+    });[cite: 16]
+
+    document.getElementById("customerForm").addEventListener("submit", e=>{
       e.preventDefault();
-      document.querySelector('.maintab[data-maintab="menu"]')?.click();
-    });
-  }
+      const t = getCartTotals();
+      if(!t.entries.length) return;
 
-  document.getElementById("checkoutBtn").addEventListener("click", openCheckout);
-  document.querySelectorAll('input[name="orderType"], input[name="paymentMethod"]').forEach(input=>{
-    input.addEventListener("change", updateCheckoutType);
-  });
+      const name = document.getElementById("customerName").value.trim();
+      const phone = document.getElementById("customerPhone").value.trim();
+      const address = document.getElementById("customerAddress").value.trim();
+      const table = document.getElementById("tableNumber").value.trim();
+      const orderType = document.querySelector('input[name="orderType"]:checked').value;
+      const paymentMethod = document.querySelector('input[name="paymentMethod"]:checked').value;
+      const error = document.getElementById("formError");
 
-  document.getElementById("customerForm").addEventListener("submit", e=>{
-    e.preventDefault();
-    const t = getCartTotals();
-    if(!t.entries.length) return;
+      if(name.length < 2){ error.textContent="Please enter your full name."; error.classList.add("show"); return; }
+      if(!/^[0-9]{10}$/.test(phone)){ error.textContent="Please enter a valid 10-digit mobile number."; error.classList.add("show"); return; }
+      if(orderType === "delivery" && address.length < 8){ error.textContent="Please enter the complete delivery address."; error.classList.add("show"); return; }
+      if(orderType === "delivery" && paymentMethod !== "cod"){ error.textContent="Delivery orders use Cash on Delivery."; error.classList.add("show"); return; }
+      if(orderType === "pickup" && paymentMethod !== "pickup"){ error.textContent="Pickup orders use Pay at Pickup."; error.classList.add("show"); return; }
 
-    const name = document.getElementById("customerName").value.trim();
-    const phone = document.getElementById("customerPhone").value.trim();
-    const address = document.getElementById("customerAddress").value.trim();
-    const table = document.getElementById("tableNumber").value.trim();
-    const orderType = document.querySelector('input[name="orderType"]:checked').value;
-    const paymentMethod = document.querySelector('input[name="paymentMethod"]:checked').value;
-    const error = document.getElementById("formError");
+      error.classList.remove("show");
+      customerDetails = {name,phone,address,table,orderType,paymentMethod};
+      showFinalConfirmation();
+    });[cite: 16]
 
-    if(name.length < 2){ error.textContent="Please enter your full name."; error.classList.add("show"); return; }
-    if(!/^[0-9]{10}$/.test(phone)){ error.textContent="Please enter a valid 10-digit mobile number."; error.classList.add("show"); return; }
-    if(orderType === "delivery" && address.length < 8){ error.textContent="Please enter the complete delivery address."; error.classList.add("show"); return; }
-    if(orderType === "delivery" && paymentMethod !== "cod"){ error.textContent="Delivery orders use Cash on Delivery."; error.classList.add("show"); return; }
-    if(orderType === "pickup" && paymentMethod !== "pickup"){ error.textContent="Pickup orders use Pay at Pickup."; error.classList.add("show"); return; }
+    document.getElementById("confirmOrderBtn").addEventListener("click", ()=>{
+      const t = getCartTotals();
+      if(!customerDetails || !t.entries.length) return;
 
-    error.classList.remove("show");
-    customerDetails = {name,phone,address,table,orderType,paymentMethod};
-    showFinalConfirmation();
-  });
+      const orderNo = "AS" + Date.now().toString().slice(-6);
+      const when = new Date().toLocaleString("en-IN", {
+        day:"2-digit",month:"short",year:"numeric",hour:"2-digit",minute:"2-digit"
+      });
+      const paymentText = customerDetails.paymentMethod === "cod" ? "Cash on Delivery" : "Pay at Pickup";
+      const itemLines = t.entries.map(e => `${e.name} x ${e.qty} = ₹${e.qty*e.price}`).join("\n");
 
-  document.getElementById("confirmOrderBtn").addEventListener("click", ()=>{
-    const t = getCartTotals();
-    if(!customerDetails || !t.entries.length) return;
-
-    const orderNo = "AS" + Date.now().toString().slice(-6);
-    const when = new Date().toLocaleString("en-IN", {
-      day:"2-digit",month:"short",year:"numeric",hour:"2-digit",minute:"2-digit"
-    });
-    const paymentText = customerDetails.paymentMethod === "cod" ? "Cash on Delivery" : "Pay at Pickup";
-    const itemLines = t.entries.map(e => `${e.name} x ${e.qty} = ₹${e.qty*e.price}`).join("\n");
-
-    const message =
+      const message =
 `*ANDHRA SPICE & FAMILY RESTAURANT*
 Maria Puram, Kadapa
 
@@ -1284,107 +1321,60 @@ Delivery: ₹${t.delivery}
 Please confirm this order.
 Thank you!`;
 
-    window.open(`https://wa.me/${RESTAURANT_PHONE}?text=${encodeURIComponent(message)}`, "_blank");
-    closeCheckout();
-  });
+      window.open(`https://wa.me/${RESTAURANT_PHONE}?text=${encodeURIComponent(message)}`, "_blank");
+      closeCheckout();
+    });[cite: 16]
 
-  document.getElementById("checkoutOverlay").addEventListener("click", e=>{
-    if(e.target.id === "checkoutOverlay") closeCheckout();
-  });
+    document.getElementById("checkoutOverlay").addEventListener("click", e=>{
+      if(e.target.id === "checkoutOverlay") closeCheckout();
+    });[cite: 16]
 
-  updateCheckoutType();
-  renderCartSummary();
+    updateCheckoutType();[cite: 16]
+    renderCartSummary();[cite: 16]
 
-  // ---------- scroll reveal engine ----------
-  const revealObserver = new IntersectionObserver((entries)=>{
-    entries.forEach(entry=>{
-      if(entry.isIntersecting){
-        entry.target.classList.add("in-view");
-        revealObserver.unobserve(entry.target);
-      }
-    });
-  }, {threshold:0.15, rootMargin:"0px 0px -40px 0px"});
-
-  document.querySelectorAll(".reveal, .sec-heading").forEach(el=>revealObserver.observe(el));
-
-  // mark the initially-active tab/category panels as visible immediately
-  document.querySelectorAll(".cat-panel.active, .maintab-panel.active").forEach(p=>p.classList.add("in"));
-
-  // ---------- photo gallery (reuses existing dish photo URLs, no new data) ----------
-  (function populateGallery(){
-    const grid = document.getElementById("galleryGrid");
-    if(!grid) return;
-    const urls = Object.values(UNIQUE_DISH_IMAGES).slice(0, 9);
-    grid.innerHTML = urls.map(u => `
-      <div class="gallery-item reveal">
-        <img src="${u}" alt="Andhra Spice dish" loading="lazy" onerror="this.closest('.gallery-item').remove();">
-      </div>
-    `).join("");
-    grid.querySelectorAll(".reveal").forEach(el=>revealObserver.observe(el));
-  })();
-
-  // ---------- subtle hero parallax (desktop only, respects reduced motion) ----------
-  if(!reduceMotion && window.innerWidth > 800){
-    const coverEl = document.querySelector(".cover");
-    let ticking = false;
-    window.addEventListener("scroll", ()=>{
-      if(ticking) return;
-      ticking = true;
-      requestanimationssFrame(()=>{
-        const y = window.scrollY;
-        if(coverEl && y < window.innerHeight) coverEl.style.transform = `translateY(${y * 0.12}px)`;
-        ticking = false;
+    // Scroll reveal engine
+    const revealObserver = new IntersectionObserver((entries)=>{
+      entries.forEach(entry=>{
+        if(entry.isIntersecting){
+          entry.target.classList.add("in-view");
+          revealObserver.unobserve(entry.target);
+        }
       });
-    }, {passive:true});
-  }
+    }, {threshold:0.15, rootMargin:"0px 0px -40px 0px"});[cite: 16]
 
-</script>
+    document.querySelectorAll(".reveal, .sec-heading").forEach(el=>revealObserver.observe(el));[cite: 16]
+    document.querySelectorAll(".cat-panel.active, .maintab-panel.active").forEach(p=>p.classList.add("in"));[cite: 16]
 
+    // Photo gallery
+    (function populateGallery(){
+      const grid = document.getElementById("galleryGrid");
+      if(!grid) return;
+      const urls = Object.values(UNIQUE_DISH_IMAGES).slice(0, 9);
+      grid.innerHTML = urls.map(u => `
+        <div class="gallery-item reveal">
+          <img src="${u}" alt="Andhra Spice dish" loading="lazy" onerror="this.closest('.gallery-item').remove();">
+        </div>
+      `).join("");
+      grid.querySelectorAll(".reveal").forEach(el=>revealObserver.observe(el));
+    })();
 
-<script>
-(function(){
-  const introScreen=document.getElementById("introScreen");
-  const introVideo=document.getElementById("introVideo");
-  const introBrand=document.getElementById("introBrand");
-  const skipIntro=document.getElementById("skipIntro");
-  if(!introScreen||!introVideo)return;
-  let closed=false;
-  let brandShown=false;
-
-  function showBrand(){
-    if(brandShown||!introBrand)return;
-    brandShown=true;
-    introBrand.classList.add("show");
-  }
-
-  function scheduleBrand(){
-    const dur = introVideo.duration;
-    if(dur && isFinite(dur)){
-      window.setTimeout(showBrand, Math.max(0,(dur-1.8))*1000);
-    } else {
-      window.setTimeout(showBrand, 3500);
+    // Subtle hero parallax
+    if(!reduceMotion && window.innerWidth > 800){
+      const coverEl = document.querySelector(".cover");
+      let ticking = false;
+      window.addEventListener("scroll", ()=>{
+        if(ticking) return;
+        ticking = true;
+        requestAnimationFrame(()=>{
+          const y = window.scrollY;
+          if(coverEl && y < window.innerHeight) coverEl.style.transform = `translateY(${y * 0.12}px)`;
+          ticking = false;
+        });
+      }, {passive:true});
     }
-  }
+  </script>
 
-  function closeIntro(){
-    if(closed)return;
-    closed=true;
-    introScreen.classList.add("hide");
-    window.setTimeout(function(){
-      if(introScreen&&introScreen.parentNode)introScreen.parentNode.removeChild(introScreen);
-    },750);
-  }
-  introVideo.addEventListener("loadedmetadata",scheduleBrand);
-  introVideo.addEventListener("timeupdate",function(){
-    if(!brandShown && introVideo.duration && introVideo.currentTime >= introVideo.duration-1.8) showBrand();
-  });
-  introVideo.addEventListener("ended",closeIntro);
-  if(skipIntro)skipIntro.addEventListener("click",closeIntro);
-  introVideo.addEventListener("error",closeIntro);
-  window.setTimeout(scheduleBrand,1200);
-  window.setTimeout(closeIntro,10000);
-})();
-</script>
-
+  <!-- LINK THE 3D ANIMATION ENGINE -->
+  <script src="animation.js"></script>
 </body>
 </html>
