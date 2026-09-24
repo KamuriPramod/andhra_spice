@@ -642,58 +642,169 @@ html,body{overflow-x:hidden;}
   const RESTAURANT_PHONE = "919441382762";
   const DELIVERY_CHARGE = 40;
 
-  const RESTAURANT_PHOTOS = {
-    biryani: [
-      "https://lh3.googleusercontent.com/vw4NPM2cx69KWTh8o5pWaureN8ZGbYDKLlXy-Xwo5b5Q2c0ePzE5fy9EkOlwUo-P6ilrsowzUPMgMILgJPTDFlH6dV26KUot7aGur92B%3Dw1200-rw",
-      "https://lh3.googleusercontent.com/FBhctHhDpbW-A9TTmpqk8GAs0io9aAyY6xOe9o6qhA0_bbvyZPuhvbt4jUnsgCTgKWWavFJMoXr5YdMqUzB02t-27yLQX-9-LUBvEGHPVg%3Dw1200-rw"
-    ],
-    starters: [
-      "https://lh3.googleusercontent.com/kwfDJU8qqh3m35J7CflRr4QnTamLxLN52hFsKsTs97m48h-i_zVk7310vaZAwpR0-at5YbRQnMRfY5Ktic8OvAge-15gAvpyNlfeA7B9%3Dw1200-rw",
-      "https://commons.wikimedia.org/wiki/Special:Redirect/file/Tandoori%20Chicken.jpg",
-      "https://commons.wikimedia.org/wiki/Special:Redirect/file/Chicken_65.jpg"
-    ],
-    veg: [
-      "https://commons.wikimedia.org/wiki/Special:Redirect/file/Paneer%20Butter%20Masala.jpg",
-      "https://commons.wikimedia.org/wiki/Special:Redirect/file/Gobi%20curry.jpg",
-      "https://commons.wikimedia.org/wiki/Special:Redirect/file/Dal%20Tadka.jpg",
-      "https://commons.wikimedia.org/wiki/Special:Redirect/file/Mushroom%20Curry.jpg"
-    ],
-    rice: [
-      "https://commons.wikimedia.org/wiki/Special:Redirect/file/FRIED_RICE.jpg",
-      "https://commons.wikimedia.org/wiki/Special:Redirect/file/Vegetable%20fried%20rice.jpg"
-    ],
-    bread: [
-      "https://commons.wikimedia.org/wiki/Special:Redirect/file/Naan.jpg"
-    ],
-    seafood: [
-      "https://commons.wikimedia.org/wiki/Special:Redirect/file/Prawn%20fry.jpg",
-      "https://commons.wikimedia.org/wiki/Special:Redirect/file/FISH%20CURRY.jpg"
-    ],
-    food: [
-      "https://commons.wikimedia.org/wiki/Special:Redirect/file/Chickenbiryani.JPG"
-    ]
+  const UNIQUE_DISH_IMAGES = {
+    // Fried Rice Category
+    "curd rice": "https://images.pexels.com/photos/12737656/pexels-photo-12737656.jpeg?auto=compress&cs=tinysrgb&w=500",
+    "spl. curd rice": "https://images.pexels.com/photos/674574/pexels-photo-674574.jpeg?auto=compress&cs=tinysrgb&w=500",
+    "veg fried rice": "https://images.pexels.com/photos/3926124/pexels-photo-3926124.jpeg?auto=compress&cs=tinysrgb&w=500",
+    "gobi fried rice": "https://images.pexels.com/photos/7394819/pexels-photo-7394819.jpeg?auto=compress&cs=tinysrgb&w=500",
+    "mushroom fried rice": "https://images.pexels.com/photos/3026808/pexels-photo-3026808.jpeg?auto=compress&cs=tinysrgb&w=500",
+    "paneer fried rice": "https://images.pexels.com/photos/9609838/pexels-photo-9609838.jpeg?auto=compress&cs=tinysrgb&w=500",
+    "paneer mushroom fried rice": "https://images.pexels.com/photos/2092906/pexels-photo-2092906.jpeg?auto=compress&cs=tinysrgb&w=500",
+    "capsicum fried rice": "https://images.pexels.com/photos/1640772/pexels-photo-1640772.jpeg?auto=compress&cs=tinysrgb&w=500",
+    "kaju fried rice": "https://images.pexels.com/photos/4439740/pexels-photo-4439740.jpeg?auto=compress&cs=tinysrgb&w=500",
+    "kaju paneer fried rice": "https://images.pexels.com/photos/2474661/pexels-photo-2474661.jpeg?auto=compress&cs=tinysrgb&w=500",
+    "jeera fried rice": "https://images.pexels.com/photos/103124/pexels-photo-103124.jpeg?auto=compress&cs=tinysrgb&w=500",
+    "veg mixed fried rice": "https://images.pexels.com/photos/1640777/pexels-photo-1640777.jpeg?auto=compress&cs=tinysrgb&w=500",
+    "egg fried rice": "https://images.pexels.com/photos/1410235/pexels-photo-1410235.jpeg?auto=compress&cs=tinysrgb&w=500",
+    "spl. egg fried rice": "https://images.pexels.com/photos/699953/pexels-photo-699953.jpeg?auto=compress&cs=tinysrgb&w=500",
+    "chicken fried rice": "https://images.pexels.com/photos/2233729/pexels-photo-2233729.jpeg?auto=compress&cs=tinysrgb&w=500",
+    "special chicken fried rice": "https://images.pexels.com/photos/2679501/pexels-photo-2679501.jpeg?auto=compress&cs=tinysrgb&w=500",
+    "non-veg mixed fried rice": "https://images.pexels.com/photos/262959/pexels-photo-262959.jpeg?auto=compress&cs=tinysrgb&w=500",
+    "mutton fried rice": "https://images.pexels.com/photos/434258/pexels-photo-434258.jpeg?auto=compress&cs=tinysrgb&w=500",
+    "spl. mutton fried rice": "https://images.pexels.com/photos/9609848/pexels-photo-9609848.jpeg?auto=compress&cs=tinysrgb&w=500",
+    "fish fried rice": "https://images.pexels.com/photos/262978/pexels-photo-262978.jpeg?auto=compress&cs=tinysrgb&w=500",
+    "prawns fried rice": "https://images.pexels.com/photos/699953/pexels-photo-699953.jpeg?auto=compress&cs=tinysrgb&w=500",
+
+    // Special Biryani & Dry
+    "gongura chicken biryani": "https://images.pexels.com/photos/1624487/pexels-photo-1624487.jpeg?auto=compress&cs=tinysrgb&w=500",
+    "gongura mutton biryani": "https://images.pexels.com/photos/7394819/pexels-photo-7394819.jpeg?auto=compress&cs=tinysrgb&w=500",
+    "ulavacharu chicken biryani": "https://images.pexels.com/photos/2679501/pexels-photo-2679501.jpeg?auto=compress&cs=tinysrgb&w=500",
+    "ulavacharu mutton biryani": "https://images.pexels.com/photos/9609848/pexels-photo-9609848.jpeg?auto=compress&cs=tinysrgb&w=500",
+    "mutton nalli ghost biryani": "https://images.pexels.com/photos/12737656/pexels-photo-12737656.jpeg?auto=compress&cs=tinysrgb&w=500",
+
+    // Biryani (Basmathi / Local Rice)
+    "biryani rice": "https://images.pexels.com/photos/103124/pexels-photo-103124.jpeg?auto=compress&cs=tinysrgb&w=500",
+    "veg biryani": "https://images.pexels.com/photos/1640777/pexels-photo-1640777.jpeg?auto=compress&cs=tinysrgb&w=500",
+    "paneer biryani": "https://images.pexels.com/photos/9609838/pexels-photo-9609838.jpeg?auto=compress&cs=tinysrgb&w=500",
+    "kaju biryani": "https://images.pexels.com/photos/4439740/pexels-photo-4439740.jpeg?auto=compress&cs=tinysrgb&w=500",
+    "mushroom biryani": "https://images.pexels.com/photos/3026808/pexels-photo-3026808.jpeg?auto=compress&cs=tinysrgb&w=500",
+    "kaju & paneer biryani": "https://images.pexels.com/photos/2474661/pexels-photo-2474661.jpeg?auto=compress&cs=tinysrgb&w=500",
+    "egg biryani": "https://images.pexels.com/photos/1410235/pexels-photo-1410235.jpeg?auto=compress&cs=tinysrgb&w=500",
+    "chicken dum biryani": "https://images.pexels.com/photos/1624487/pexels-photo-1624487.jpeg?auto=compress&cs=tinysrgb&w=500",
+    "chicken leg piece biryani": "https://images.pexels.com/photos/2338407/pexels-photo-2338407.jpeg?auto=compress&cs=tinysrgb&w=500",
+    "special chicken biryani": "https://images.pexels.com/photos/2679501/pexels-photo-2679501.jpeg?auto=compress&cs=tinysrgb&w=500",
+    "chicken lollipop biryani": "https://images.pexels.com/photos/60616/fried-chicken-chicken-fried-crunchy-60616.jpeg?auto=compress&cs=tinysrgb&w=500",
+    "mutton dum biryani": "https://images.pexels.com/photos/7394819/pexels-photo-7394819.jpeg?auto=compress&cs=tinysrgb&w=500",
+    "keema biryani": "https://images.pexels.com/photos/434258/pexels-photo-434258.jpeg?auto=compress&cs=tinysrgb&w=500",
+    "special mutton biryani": "https://images.pexels.com/photos/9609848/pexels-photo-9609848.jpeg?auto=compress&cs=tinysrgb&w=500",
+    "fish biryani": "https://images.pexels.com/photos/262978/pexels-photo-262978.jpeg?auto=compress&cs=tinysrgb&w=500",
+    "prawns biryani": "https://images.pexels.com/photos/699953/pexels-photo-699953.jpeg?auto=compress&cs=tinysrgb&w=500",
+    "natukodi biryani": "https://images.pexels.com/photos/2233729/pexels-photo-2233729.jpeg?auto=compress&cs=tinysrgb&w=500",
+    "chicken biryani fry pcs": "https://images.pexels.com/photos/106343/pexels-photo-106343.jpeg?auto=compress&cs=tinysrgb&w=500",
+    "mutton biryani fry pcs": "https://images.pexels.com/photos/12737656/pexels-photo-12737656.jpeg?auto=compress&cs=tinysrgb&w=500",
+    "chicken family pack": "https://images.pexels.com/photos/1624487/pexels-photo-1624487.jpeg?auto=compress&cs=tinysrgb&w=500",
+    "chicken leg piece family pack": "https://images.unsplash.com/photo-1599488615731-7e5c2823ff28?w=500&auto=format&fit=crop&q=80",
+    "special chicken family pack": "https://images.pexels.com/photos/2679501/pexels-photo-2679501.jpeg?auto=compress&cs=tinysrgb&w=500",
+    "mutton family pack": "https://images.pexels.com/photos/7394819/pexels-photo-7394819.jpeg?auto=compress&cs=tinysrgb&w=500",
+    "special mutton family pack": "https://images.pexels.com/photos/9609848/pexels-photo-9609848.jpeg?auto=compress&cs=tinysrgb&w=500",
+    "chicken biryani couple pack": "https://images.pexels.com/photos/1624487/pexels-photo-1624487.jpeg?auto=compress&cs=tinysrgb&w=500",
+    "spl. chicken biryani couple pack": "https://images.pexels.com/photos/2679501/pexels-photo-2679501.jpeg?auto=compress&cs=tinysrgb&w=500",
+    "mutton biryani couple pack": "https://images.pexels.com/photos/7394819/pexels-photo-7394819.jpeg?auto=compress&cs=tinysrgb&w=500",
+    "mini jambo pack biryani": "https://images.pexels.com/photos/1624487/pexels-photo-1624487.jpeg?auto=compress&cs=tinysrgb&w=500",
+    "jambo pack biryani": "https://images.pexels.com/photos/7394819/pexels-photo-7394819.jpeg?auto=compress&cs=tinysrgb&w=500",
+
+    // Kunda & Bongu Biryani
+    "veg kunda biryani": "https://images.pexels.com/photos/1640777/pexels-photo-1640777.jpeg?auto=compress&cs=tinysrgb&w=500",
+    "veg kunda family pack": "https://images.pexels.com/photos/9609838/pexels-photo-9609838.jpeg?auto=compress&cs=tinysrgb&w=500",
+    "chicken kunda biryani": "https://images.pexels.com/photos/1624487/pexels-photo-1624487.jpeg?auto=compress&cs=tinysrgb&w=500",
+    "chicken kunda family pack": "https://images.pexels.com/photos/2679501/pexels-photo-2679501.jpeg?auto=compress&cs=tinysrgb&w=500",
+    "mutton kunda biryani": "https://images.pexels.com/photos/7394819/pexels-photo-7394819.jpeg?auto=compress&cs=tinysrgb&w=500",
+    "mutton kunda family pack": "https://images.pexels.com/photos/9609848/pexels-photo-9609848.jpeg?auto=compress&cs=tinysrgb&w=500",
+    "chicken bongu biryani": "https://images.pexels.com/photos/2233729/pexels-photo-2233729.jpeg?auto=compress&cs=tinysrgb&w=500",
+    "spl chicken bongu biryani": "https://images.pexels.com/photos/2679501/pexels-photo-2679501.jpeg?auto=compress&cs=tinysrgb&w=500",
+    "mutton bongu biryani": "https://images.pexels.com/photos/7394819/pexels-photo-7394819.jpeg?auto=compress&cs=tinysrgb&w=500",
+    "spl mutton bongu biryani": "https://images.pexels.com/photos/9609848/pexels-photo-9609848.jpeg?auto=compress&cs=tinysrgb&w=500",
+
+    // Bucket Biryani
+    "bucket chicken biryani": "https://images.pexels.com/photos/1624487/pexels-photo-1624487.jpeg?auto=compress&cs=tinysrgb&w=500",
+    "bucket spl. chicken biryani": "https://images.pexels.com/photos/2679501/pexels-photo-2679501.jpeg?auto=compress&cs=tinysrgb&w=500",
+    "bucket mutton biryani": "https://images.pexels.com/photos/7394819/pexels-photo-7394819.jpeg?auto=compress&cs=tinysrgb&w=500",
+    "bucket fish biryani": "https://images.pexels.com/photos/262978/pexels-photo-262978.jpeg?auto=compress&cs=tinysrgb&w=500",
+    "bucket prawns biryani": "https://images.pexels.com/photos/699953/pexels-photo-699953.jpeg?auto=compress&cs=tinysrgb&w=500",
+    "mini bucket chicken biryani": "https://images.pexels.com/photos/1624487/pexels-photo-1624487.jpeg?auto=compress&cs=tinysrgb&w=500",
+    "mini bucket spl. chicken biryani": "https://images.pexels.com/photos/2679501/pexels-photo-2679501.jpeg?auto=compress&cs=tinysrgb&w=500",
+    "mini bucket mutton biryani": "https://images.pexels.com/photos/7394819/pexels-photo-7394819.jpeg?auto=compress&cs=tinysrgb&w=500",
+    "mini bucket fish biryani": "https://images.pexels.com/photos/262978/pexels-photo-262978.jpeg?auto=compress&cs=tinysrgb&w=500",
+    "mini bucket prawns biryani": "https://images.pexels.com/photos/699953/pexels-photo-699953.jpeg?auto=compress&cs=tinysrgb&w=500",
+
+    // Starters - Non-Veg
+    "tangadi kabab (1 pc.)": "https://images.pexels.com/photos/2338407/pexels-photo-2338407.jpeg?auto=compress&cs=tinysrgb&w=500",
+    "tangadi kabab (4 pcs.)": "https://images.pexels.com/photos/2338407/pexels-photo-2338407.jpeg?auto=compress&cs=tinysrgb&w=500",
+    "tandoori chicken half": "https://images.pexels.com/photos/106343/pexels-photo-106343.jpeg?auto=compress&cs=tinysrgb&w=500",
+    "tandoori chicken full": "https://images.pexels.com/photos/106343/pexels-photo-106343.jpeg?auto=compress&cs=tinysrgb&w=500",
+    "chicken tikka (8 pcs.)": "https://images.pexels.com/photos/2233729/pexels-photo-2233729.jpeg?auto=compress&cs=tinysrgb&w=500",
+    "malai tikka (8 pcs.)": "https://images.pexels.com/photos/262959/pexels-photo-262959.jpeg?auto=compress&cs=tinysrgb&w=500",
+    "zafrani tikka (8 pcs.)": "https://images.pexels.com/photos/2233729/pexels-photo-2233729.jpeg?auto=compress&cs=tinysrgb&w=500",
+    "achari tikka (8 pcs.)": "https://images.pexels.com/photos/2679501/pexels-photo-2679501.jpeg?auto=compress&cs=tinysrgb&w=500",
+    "hariyali kabab (8 pcs.)": "https://images.pexels.com/photos/4439740/pexels-photo-4439740.jpeg?auto=compress&cs=tinysrgb&w=500",
+
+    // Starters - Veg
+    "paneer tikka (8 pcs.)": "https://images.pexels.com/photos/9609838/pexels-photo-9609838.jpeg?auto=compress&cs=tinysrgb&w=500",
+    "paneer garlic kabab (8 pcs.)": "https://images.pexels.com/photos/9609838/pexels-photo-9609838.jpeg?auto=compress&cs=tinysrgb&w=500",
+    "harayali paneer (8 pcs.)": "https://images.pexels.com/photos/4439740/pexels-photo-4439740.jpeg?auto=compress&cs=tinysrgb&w=500",
+    "paneer chatpat kabab (8 pcs.)": "https://images.pexels.com/photos/9609838/pexels-photo-9609838.jpeg?auto=compress&cs=tinysrgb&w=500",
+
+    // Starters - Prawns
+    "prawns 65 (dry)": "https://images.pexels.com/photos/699953/pexels-photo-699953.jpeg?auto=compress&cs=tinysrgb&w=500",
+    "pepper prawns": "https://images.pexels.com/photos/699953/pexels-photo-699953.jpeg?auto=compress&cs=tinysrgb&w=500",
+    "loose prawns (dry)": "https://images.pexels.com/photos/699953/pexels-photo-699953.jpeg?auto=compress&cs=tinysrgb&w=500",
+    "ginger prawns (dry)": "https://images.pexels.com/photos/699953/pexels-photo-699953.jpeg?auto=compress&cs=tinysrgb&w=500",
+    "golden fried prawns (dry)": "https://images.pexels.com/photos/699953/pexels-photo-699953.jpeg?auto=compress&cs=tinysrgb&w=500",
+    "prawns roast (dry)": "https://images.pexels.com/photos/699953/pexels-photo-699953.jpeg?auto=compress&cs=tinysrgb&w=500",
+
+    // Veg Curries
+    "tomato curry": "https://images.pexels.com/photos/1640772/pexels-photo-1640772.jpeg?auto=compress&cs=tinysrgb&w=500",
+    "dal fry": "https://images.pexels.com/photos/2474661/pexels-photo-2474661.jpeg?auto=compress&cs=tinysrgb&w=500",
+    "dal tadka": "https://images.pexels.com/photos/2474661/pexels-photo-2474661.jpeg?auto=compress&cs=tinysrgb&w=500",
+    "capsicum curry": "https://images.pexels.com/photos/1640772/pexels-photo-1640772.jpeg?auto=compress&cs=tinysrgb&w=500",
+    "veg. kolapuri": "https://images.pexels.com/photos/2474661/pexels-photo-2474661.jpeg?auto=compress&cs=tinysrgb&w=500",
+    "aloo mutter": "https://images.pexels.com/photos/2474661/pexels-photo-2474661.jpeg?auto=compress&cs=tinysrgb&w=500",
+    "aloo gobi": "https://images.pexels.com/photos/7394819/pexels-photo-7394819.jpeg?auto=compress&cs=tinysrgb&w=500",
+    "gobi mutter": "https://images.pexels.com/photos/7394819/pexels-photo-7394819.jpeg?auto=compress&cs=tinysrgb&w=500",
+    "veg kayamath": "https://images.pexels.com/photos/1640777/pexels-photo-1640777.jpeg?auto=compress&cs=tinysrgb&w=500",
+    "methi chaman": "https://images.pexels.com/photos/9609838/pexels-photo-9609838.jpeg?auto=compress&cs=tinysrgb&w=500",
+    "paneer sai kurma": "https://images.pexels.com/photos/9609838/pexels-photo-9609838.jpeg?auto=compress&cs=tinysrgb&w=500",
+    "veg. kofta": "https://images.pexels.com/photos/2474661/pexels-photo-2474661.jpeg?auto=compress&cs=tinysrgb&w=500",
+    "malai kofta": "https://images.pexels.com/photos/2474661/pexels-photo-2474661.jpeg?auto=compress&cs=tinysrgb&w=500",
+    "baby corn masala": "https://images.pexels.com/photos/1640777/pexels-photo-1640777.jpeg?auto=compress&cs=tinysrgb&w=500",
+    "mix veg curry": "https://images.pexels.com/photos/1640777/pexels-photo-1640777.jpeg?auto=compress&cs=tinysrgb&w=500",
+    "veg. patiyala": "https://images.pexels.com/photos/2474661/pexels-photo-2474661.jpeg?auto=compress&cs=tinysrgb&w=500",
+    "kadai veg": "https://images.pexels.com/photos/1640777/pexels-photo-1640777.jpeg?auto=compress&cs=tinysrgb&w=500",
+    "aloo palak": "https://images.pexels.com/photos/4439740/pexels-photo-4439740.jpeg?auto=compress&cs=tinysrgb&w=500",
+    "plain palak": "https://images.pexels.com/photos/4439740/pexels-photo-4439740.jpeg?auto=compress&cs=tinysrgb&w=500",
+    "palak paneer": "https://images.pexels.com/photos/4439740/pexels-photo-4439740.jpeg?auto=compress&cs=tinysrgb&w=500",
+    "kadai paneer": "https://images.pexels.com/photos/9609838/pexels-photo-9609838.jpeg?auto=compress&cs=tinysrgb&w=500",
+    "mushroom masala": "https://images.pexels.com/photos/3026808/pexels-photo-3026808.jpeg?auto=compress&cs=tinysrgb&w=500",
+    "mushroom curry / fry": "https://images.pexels.com/photos/3026808/pexels-photo-3026808.jpeg?auto=compress&cs=tinysrgb&w=500",
+    "paneer butter masala": "https://images.pexels.com/photos/9609838/pexels-photo-9609838.jpeg?auto=compress&cs=tinysrgb&w=500",
+    "paneer mutter": "https://images.pexels.com/photos/9609838/pexels-photo-9609838.jpeg?auto=compress&cs=tinysrgb&w=500",
+    "paneer mushroom curry": "https://images.pexels.com/photos/2092906/pexels-photo-2092906.jpeg?auto=compress&cs=tinysrgb&w=500",
+    "kaju paneer curry": "https://images.pexels.com/photos/2474661/pexels-photo-2474661.jpeg?auto=compress&cs=tinysrgb&w=500",
+    "kaju curry": "https://images.pexels.com/photos/4439740/pexels-photo-4439740.jpeg?auto=compress&cs=tinysrgb&w=500",
+
+    // Rotis & Naan
+    "tandoori roti": "https://images.pexels.com/photos/2474661/pexels-photo-2474661.jpeg?auto=compress&cs=tinysrgb&w=500",
+    "butter roti": "https://images.pexels.com/photos/2474661/pexels-photo-2474661.jpeg?auto=compress&cs=tinysrgb&w=500",
+    "plain naan": "https://images.pexels.com/photos/9609848/pexels-photo-9609848.jpeg?auto=compress&cs=tinysrgb&w=500",
+    "butter naan": "https://images.pexels.com/photos/9609848/pexels-photo-9609848.jpeg?auto=compress&cs=tinysrgb&w=500",
+    "plain kulcha": "https://images.pexels.com/photos/2474661/pexels-photo-2474661.jpeg?auto=compress&cs=tinysrgb&w=500",
+    "butter kulcha": "https://images.pexels.com/photos/2474661/pexels-photo-2474661.jpeg?auto=compress&cs=tinysrgb&w=500",
+    "masala kulcha": "https://images.pexels.com/photos/9609848/pexels-photo-9609848.jpeg?auto=compress&cs=tinysrgb&w=500",
+    "stuffed kulcha": "https://images.pexels.com/photos/2474661/pexels-photo-2474661.jpeg?auto=compress&cs=tinysrgb&w=500",
+
+    // Drinks
+    "water bottle": "https://images.pexels.com/photos/416528/pexels-photo-416528.jpeg?auto=compress&cs=tinysrgb&w=500",
+    "cool drinks": "https://images.pexels.com/photos/50593/coca-cola-cold-drink-soft-drink-coke-50593.jpeg?auto=compress&cs=tinysrgb&w=500",
+    "goli soda": "https://images.pexels.com/photos/1292294/pexels-photo-1292294.jpeg?auto=compress&cs=tinysrgb&w=500"
   };
 
   function photoForDish(name) {
-    const n = String(name).toLowerCase();
-    let pool = RESTAURANT_PHOTOS.food;
-
-    if (/biryani|kunda|bongu|bucket|jambo|family pack|couple pack/.test(n)) {
-      pool = RESTAURANT_PHOTOS.biryani;
-    } else if (/prawn|fish/.test(n)) {
-      pool = RESTAURANT_PHOTOS.seafood;
-    } else if (/chicken|mutton|kabab|kebab|tikka|tandoori|tangadi|lollipop|natukodi/.test(n)) {
-      pool = RESTAURANT_PHOTOS.starters;
-    } else if (/fried rice/.test(n)) {
-      pool = RESTAURANT_PHOTOS.rice;
-    } else if (/roti|naan|kulcha/.test(n)) {
-      pool = RESTAURANT_PHOTOS.bread;
-    } else if (/paneer|mushroom|gobi|dal|curry|masala|kofta|palak|methi|aloo|tomato|capsicum|kaju|baby corn|veg/.test(n)) {
-      pool = RESTAURANT_PHOTOS.veg;
+    const key = String(name).trim().toLowerCase();
+    if (UNIQUE_DISH_IMAGES[key]) {
+      return UNIQUE_DISH_IMAGES[key];
     }
-
-    const hash = [...n].reduce((sum, ch) => sum + ch.charCodeAt(0), 0);
-    return pool[hash % pool.length];
+    return "https://images.pexels.com/photos/1624487/pexels-photo-1624487.jpeg?auto=compress&cs=tinysrgb&w=500";
   }
 
   const MENU = {
@@ -832,7 +943,7 @@ html,body{overflow-x:hidden;}
              src="${photo}"
              alt="${name}"
              loading="lazy"
-             onerror="this.onerror=null;this.src='${fallback}';">
+             onerror="this.style.display='none';">
       </div>
       <div class="dish-main">
         <div class="dish-info">
